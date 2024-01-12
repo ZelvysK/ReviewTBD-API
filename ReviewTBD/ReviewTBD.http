@@ -1,0 +1,6 @@
+@ReviewTBD_HostAddress = http://localhost:5054
+
+GET {{ReviewTBD_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
