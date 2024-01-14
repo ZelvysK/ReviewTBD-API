@@ -8,5 +8,5 @@ public class MovieDto
     public string CoverUrl { get; set; }
     public DateOnly CreatedDate { get; set; }
     public Guid MovieStudioId { get; set; }
-    public MovieStudioDto? MovieStudio { get; set; }
+    public StudioDto? MovieStudio { get; set; }
 }

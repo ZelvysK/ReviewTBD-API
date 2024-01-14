@@ -10,7 +10,7 @@ public class Game
     public string CoverUrl { get; set; }
     public DateOnly ReleaseDate { get; set;}
     public Guid GameCreatorId { get; set; }
-    public GameStudio? GameCreator{ get; set; }
+    public Studio? GameCreator{ get; set; }
 
     public GameDto ToDto() => new()
     {

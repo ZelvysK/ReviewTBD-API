@@ -8,5 +8,5 @@ public class GameDto
     public string CoverUrl { get; set; }
     public DateOnly ReleaseDate { get; set; }
     public Guid GameStudioId { get; set; }
-    public GameStudioDto? GameCreator { get; set; }
+    public StudioDto? GameCreator { get; set; }
 }

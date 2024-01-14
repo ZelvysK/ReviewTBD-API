@@ -29,7 +29,7 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
 
         var entry = await context.Animes
             .AsNoTracking()
-            .Include(a => a.Studio)
+            .Include(a => a.AnimeStudio)
             .FirstOrDefaultAsync(e => e.Id == id);
 
         var result = entry?.ToDto();

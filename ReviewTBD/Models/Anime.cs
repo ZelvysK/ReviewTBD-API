@@ -8,9 +8,9 @@ public class Anime
     public string Title { get; set; }
     public string Description { get; set; }
     public string CoverUrl { get; set; }
-    public Guid AnimeStudioId { get; set; }
-    public AnimeStudio? Studio { get; set; }
     public DateOnly ReleaseDate { get; set; }
+    public Guid AnimeStudioId { get; set; }
+    public Studio? AnimeStudio { get; set; }
 
     public AnimeDto ToDto() => new()
     {
@@ -19,7 +19,7 @@ public class Anime
         Description = Description,
         CoverUrl = CoverUrl,
         AnimeStudioId = AnimeStudioId,
-        Studio = Studio?.ToDto(),
+        AnimeStudio = AnimeStudio?.ToDto(),
         ReleaseDate = ReleaseDate,
     };
 }
