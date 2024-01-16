@@ -7,7 +7,7 @@ public class Game
     public Guid Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public string CoverUrl { get; set; }
+    public string CoverImageUrl { get; set; }
     public DateOnly ReleaseDate { get; set;}
     public Guid GameCreatorId { get; set; }
     public Studio? GameCreator{ get; set; }
@@ -17,7 +17,7 @@ public class Game
         Id = Id,
         Title = Title,
         Description = Description,
-        CoverUrl = CoverUrl,
+        CoverImageUrl = CoverImageUrl,
         ReleaseDate = ReleaseDate,
         GameStudioId = GameCreatorId,
         GameCreator = GameCreator?.ToDto(),

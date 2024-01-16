@@ -38,7 +38,7 @@ public class MovieService(ReviewContext context, ILogger<MovieService> logger) :
     }
 
     public async Task<MovieDto[]> GetMoviesByStudioAsync(Guid movieStudioId) {
-        logger.LogInformation("Get entry by author: {movieStudioId}", movieStudioId);
+        logger.LogInformation("Get movie by author: {movieStudioId}", movieStudioId);
 
         var entries = await context.Movies
             .AsNoTracking()

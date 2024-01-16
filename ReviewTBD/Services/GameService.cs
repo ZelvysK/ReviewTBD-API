@@ -38,7 +38,7 @@ public class GameService(ReviewContext context, ILogger<GameService> logger) : I
     }
 
     public async Task<GameDto[]> GetGamesByCreatorAsync(Guid gameCreatorId) {
-        logger.LogInformation("Get entry by creator: {gameCreatorId}", gameCreatorId);
+        logger.LogInformation("Get game by creator: {gameCreatorId}", gameCreatorId);
 
         var entries = await context.Games
             .AsNoTracking()

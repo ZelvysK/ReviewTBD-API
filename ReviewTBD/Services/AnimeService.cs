@@ -38,7 +38,7 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
     }
 
     public async Task<AnimeDto[]> GetAnimeByStudioAsync(Guid animeStudioId) {
-        logger.LogInformation("Get entry by author: {animeStudioId}", animeStudioId);
+        logger.LogInformation("Get Anime by author: {animeStudioId}", animeStudioId);
 
         var entries = await context.Animes
             .AsNoTracking()

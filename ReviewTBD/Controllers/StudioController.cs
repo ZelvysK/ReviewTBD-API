@@ -10,10 +10,17 @@ namespace ReviewTBDAPI.Controllers;
 public class StudioController(IStudioService studioService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<StudioDto[]>> GetAllStudios([FromQuery] StudioType studioType) {
+    public async Task<ActionResult<StudioDto[]>> GetAllStudios() {
         var entries = await studioService.GetAllStudiosAsync();
 
-        return Ok(entries.Where(t=>t.Type == studioType));
+        return Ok(entries);
+    }
+
+    [HttpGet("Type")]
+    public async Task<ActionResult<StudioDto[]>> GetAllStudiosByType([FromQuery] StudioType studioType) {
+        var entries = await studioService.GetAllStudiosByTypeAsync(studioType);
+
+        return Ok(entries);
     }
 
     [HttpGet("{id}")]

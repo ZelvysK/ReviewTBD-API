@@ -7,6 +7,7 @@ namespace ReviewTBDAPI.Services;
 public interface IStudioService
 {
     Task<StudioDto[]> GetAllStudiosAsync();
+    Task<StudioDto[]> GetAllStudiosByTypeAsync(StudioType studioType);
     Task<StudioDto?> GetStudioByIdAsync(Guid id);
 }
 
@@ -17,6 +18,19 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
 
         var entries = await context.Studios
             .AsNoTracking()
+            .ToArrayAsync();
+
+        var result = entries.Select(a => a.ToDto()).ToArray();
+
+        return result;
+    }
+
+    public async Task<StudioDto[]> GetAllStudiosByTypeAsync(StudioType studioType) {
+        logger.LogInformation("Get all {studioType} studios", studioType);
+
+        var entries = await context.Studios
+            .AsNoTracking()
+            .Where(t => t.Type == studioType)
             .ToArrayAsync();
 
         var result = entries.Select(a => a.ToDto()).ToArray();
