@@ -1,41 +1,45 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
+using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Enums;
+using ReviewTBDAPI.Utilities;
 
 namespace ReviewTBDAPI.Services;
 
 public interface IStudioService
 {
-    Task<StudioDto[]> GetAllStudiosAsync();
-    Task<StudioDto[]> GetAllStudiosByTypeAsync(StudioType studioType);
+    Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters);
     Task<StudioDto?> GetStudioByIdAsync(Guid id);
 }
 
 public class StudioService(ReviewContext context, ILogger<StudioService> logger) : IStudioService
 {
-    public async Task<StudioDto[]> GetAllStudiosAsync() {
-        logger.LogInformation("Get all studios");
+    public async Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters) {
+        logger.LogInformation("Get all studios, filters: {Filters}", filters);
 
-        var entries = await context.Studios
-            .AsNoTracking()
+        var query = context.Studios.AsNoTracking();
+
+        if (filters.StudioType is not null)
+        {
+            query = query.Where(s => s.Type == filters.StudioType);
+        }
+
+        var entries = await query
+            .FilterByDateFounded(filters.From, filters.To)
+            .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
+
+        var totalCount = await query.CountAsync();
 
         var result = entries.Select(a => a.ToDto()).ToArray();
 
-        return result;
-    }
-
-    public async Task<StudioDto[]> GetAllStudiosByTypeAsync(StudioType studioType) {
-        logger.LogInformation("Get all {studioType} studios", studioType);
-
-        var entries = await context.Studios
-            .AsNoTracking()
-            .Where(t => t.Type == studioType)
-            .ToArrayAsync();
-
-        var result = entries.Select(a => a.ToDto()).ToArray();
-
-        return result;
+        return new PaginatedResult<StudioDto>
+        {
+            Limit = filters.Limit,
+            Offset = filters.Offset,
+            Result = result,
+            Total = totalCount
+        };
     }
 
     public async Task<StudioDto?> GetStudioByIdAsync(Guid id) {
@@ -49,5 +53,4 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
 
         return result;
     }
-
 }

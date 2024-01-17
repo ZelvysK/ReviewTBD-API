@@ -3,7 +3,12 @@ using ReviewTBDAPI.Enums;
 
 namespace ReviewTBDAPI.Models;
 
-public class Studio
+public interface IFounded
+{
+    DateOnly FoundedDate { get; set; }
+}
+
+public class Studio : IFounded
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
