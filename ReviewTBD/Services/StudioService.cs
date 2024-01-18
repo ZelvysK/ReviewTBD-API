@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
-using ReviewTBDAPI.Enums;
 using ReviewTBDAPI.Utilities;
 
 namespace ReviewTBDAPI.Services;
@@ -14,7 +13,8 @@ public interface IStudioService
 
 public class StudioService(ReviewContext context, ILogger<StudioService> logger) : IStudioService
 {
-    public async Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters) {
+    public async Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters)
+    {
         logger.LogInformation("Get all studios, filters: {Filters}", filters);
 
         var query = context.Studios.AsNoTracking();
@@ -42,7 +42,8 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         };
     }
 
-    public async Task<StudioDto?> GetStudioByIdAsync(Guid id) {
+    public async Task<StudioDto?> GetStudioByIdAsync(Guid id)
+    {
         logger.LogInformation("Get studio by id: {id}", id);
 
         var entry = await context.Studios

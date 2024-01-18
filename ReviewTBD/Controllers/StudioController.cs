@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
-using ReviewTBDAPI.Enums;
 using ReviewTBDAPI.Services;
 
 namespace ReviewTBDAPI.Controllers;
@@ -17,7 +16,7 @@ public class StudioController(IStudioService studioService) : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<StudioDto[]>> GetStudioById(Guid id) {
         var entry = await studioService.GetStudioByIdAsync(id);
 

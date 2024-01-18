@@ -1,12 +1,8 @@
 ﻿using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Enums;
+using ReviewTBDAPI.Shared;
 
 namespace ReviewTBDAPI.Models;
-
-public interface IFounded
-{
-    DateOnly FoundedDate { get; set; }
-}
 
 public class Studio : IFounded
 {

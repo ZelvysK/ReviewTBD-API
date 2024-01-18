@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Startup;
 using System.Text.Json.Serialization;
+using ReviewTBDAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
