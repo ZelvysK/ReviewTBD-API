@@ -20,4 +20,17 @@ public static class QueryableExtensions
             (!to.HasValue || item.FoundedDate <= to.Value)
         );
     }
+
+    public static IQueryable<T> FilterByDateReleased<T>(this IQueryable<T> query, DateOnly? from, DateOnly? to)
+        where T : IReleased {
+        if (from.HasValue && to.HasValue && from.Value > to.Value)
+        {
+            throw new ArgumentException("The 'from' date must be less than or equal to the 'to' date.");
+        }
+
+        return query.Where(item =>
+            (!from.HasValue || item.ReleasedDate >= from.Value) &&
+            (!to.HasValue || item.ReleasedDate <= to.Value)
+        );
+    }
 }

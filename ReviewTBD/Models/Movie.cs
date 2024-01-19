@@ -8,7 +8,7 @@ public class Movie
     public string Title { get; set; }
     public string Description { get; set; }
     public string CoverUrl { get; set; }
-    public DateOnly CreatedDate { get; set;}
+    public DateOnly ReleasedDate { get; set;}
     public Guid MovieStudioId { get; set; }
     public Studio? MovieStudio { get; set; }
 
@@ -18,7 +18,7 @@ public class Movie
         Title = Title,
         Description = Description,
         CoverUrl = CoverUrl,
-        CreatedDate = CreatedDate,
+        CreatedDate = ReleasedDate,
         MovieStudioId = MovieStudioId,
         MovieStudio = MovieStudio?.ToDto(),
     };
