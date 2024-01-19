@@ -9,7 +9,7 @@ public class Anime : IReleased
     public string Title { get; set; }
     public string Description { get; set; }
     public string CoverImageUrl { get; set; }
-    public DateOnly ReleasedDate { get; set; }
+    public DateOnly ReleaseDate { get; set; }
     public Guid AnimeStudioId { get; set; }
     public Studio? AnimeStudio { get; set; }
 
@@ -21,6 +21,6 @@ public class Anime : IReleased
         CoverImageUrl = CoverImageUrl,
         AnimeStudioId = AnimeStudioId,
         AnimeStudio = AnimeStudio?.ToDto(),
-        ReleaseDate = ReleasedDate,
+        ReleaseDate = ReleaseDate,
     };
 }

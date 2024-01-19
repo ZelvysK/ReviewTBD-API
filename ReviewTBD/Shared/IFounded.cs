@@ -7,5 +7,5 @@ public interface IFounded
 
 public interface IReleased
 {
-    DateOnly ReleasedDate { get; set; }
+    DateOnly ReleaseDate { get; set; }
 }

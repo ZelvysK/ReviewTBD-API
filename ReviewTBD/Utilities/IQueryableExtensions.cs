@@ -29,8 +29,8 @@ public static class QueryableExtensions
         }
 
         return query.Where(item =>
-            (!from.HasValue || item.ReleasedDate >= from.Value) &&
-            (!to.HasValue || item.ReleasedDate <= to.Value)
+            (!from.HasValue || item.ReleaseDate >= from.Value) &&
+            (!to.HasValue || item.ReleaseDate <= to.Value)
         );
     }
 }
