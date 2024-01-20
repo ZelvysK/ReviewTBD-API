@@ -25,7 +25,7 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         }
 
         var entries = await query
-            .FilterByDateFounded(filters.From, filters.To)
+            .FilterByDateCreated(filters.From, filters.To)
             .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
 

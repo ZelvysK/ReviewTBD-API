@@ -4,13 +4,13 @@ using ReviewTBDAPI.Shared;
 
 namespace ReviewTBDAPI.Models;
 
-public class Studio : IFounded
+public class Studio : IDated
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public string ImageUrl { get; set; }
-    public DateOnly FoundedDate { get; set; }
+    public DateOnly CreatedDate { get; set; }
     public StudioType Type { get; set; }
 
     public StudioDto ToDto() => new()
@@ -19,7 +19,7 @@ public class Studio : IFounded
         Name = Name,
         Description = Description,
         ImageUrl = ImageUrl,
-        FoundedDate = FoundedDate,
+        CreatedDate = CreatedDate,
         Type = Type,
     };
 }

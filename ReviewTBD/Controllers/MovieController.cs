@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReviewTBDAPI.Contracts;
+using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Services;
 
 namespace ReviewTBDAPI.Controllers;
@@ -9,8 +10,8 @@ namespace ReviewTBDAPI.Controllers;
 public class MovieController(IMovieService movieService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<MovieDto[]>> GetAllMovies() {
-        var entries = await movieService.GetAllMoviesAsync();
+    public async Task<ActionResult<MovieDto[]>> GetAllMovies([FromQuery] EntryQuery filters) {
+        var entries = await movieService.GetAllMoviesAsync(filters);
 
         return Ok(entries);
     }
@@ -28,8 +29,8 @@ public class MovieController(IMovieService movieService) : ControllerBase
     }
 
     [HttpGet("MovieStudio/{studioId}")]
-    public async Task<ActionResult<IEnumerable<MovieDto>>> GetMoviesByStudio(Guid studioId) {
-        var entries = await movieService.GetMoviesByStudioAsync(studioId);
+    public async Task<ActionResult<IEnumerable<MovieDto>>> GetMoviesByStudio([FromQuery] EntryQuery filters,Guid studioId) {
+        var entries = await movieService.GetMoviesByStudioAsync(filters, studioId);
 
         return Ok(entries);
     }

@@ -21,7 +21,7 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
         var query = context.Animes.AsNoTracking();
 
         var entries = await query
-            .FilterByDateReleased(filters.From, filters.To)
+            .FilterByDateCreated(filters.From, filters.To)
             .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
 
@@ -58,7 +58,7 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
 
         var entries = await query
             .Where(a => a.AnimeStudioId == animeStudioId)
-            .FilterByDateReleased(filters.From, filters.To)
+            .FilterByDateCreated(filters.From, filters.To)
             .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
 
