@@ -20,7 +20,7 @@ public class Game : IDated
         Title = Title,
         Description = Description,
         CoverImageUrl = CoverImageUrl,
-        CreatedDate = DateCreated,
+        DateCreated = DateCreated,
         GameStudioId = GameCreatorId,
         GameCreator = GameCreator?.ToDto(),
     };
