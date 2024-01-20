@@ -9,7 +9,7 @@ public class Movie : IDated
     public string Title { get; set; }
     public string Description { get; set; }
     public string CoverUrl { get; set; }
-    public DateOnly CreatedDate { get; set;}
+    public DateOnly DateCreated { get; set;}
     public Guid MovieStudioId { get; set; }
     public Studio? MovieStudio { get; set; }
 
@@ -19,7 +19,7 @@ public class Movie : IDated
         Title = Title,
         Description = Description,
         CoverUrl = CoverUrl,
-        CreatedDate = CreatedDate,
+        DateCreated = DateCreated,
         MovieStudioId = MovieStudioId,
         MovieStudio = MovieStudio?.ToDto(),
     };

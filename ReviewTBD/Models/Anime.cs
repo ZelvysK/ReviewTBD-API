@@ -9,7 +9,7 @@ public class Anime : IDated
     public string Title { get; set; }
     public string Description { get; set; }
     public string CoverImageUrl { get; set; }
-    public DateOnly CreatedDate { get; set; }
+    public DateOnly DateCreated { get; set; }
     public Guid AnimeStudioId { get; set; }
     public Studio? AnimeStudio { get; set; }
 
@@ -21,6 +21,6 @@ public class Anime : IDated
         CoverImageUrl = CoverImageUrl,
         AnimeStudioId = AnimeStudioId,
         AnimeStudio = AnimeStudio?.ToDto(),
-        CreatedDate = CreatedDate,
+        DateCreated = DateCreated,
     };
 }

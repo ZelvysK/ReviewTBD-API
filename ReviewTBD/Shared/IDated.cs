@@ -2,5 +2,5 @@ namespace ReviewTBDAPI.Shared;
 
 public interface IDated
 {
-    DateOnly CreatedDate { get; set; }
+    DateOnly DateCreated { get; set; }
 }

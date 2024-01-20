@@ -10,7 +10,7 @@ public class Game : IDated
     public string Title { get; set; }
     public string Description { get; set; }
     public string CoverImageUrl { get; set; }
-    public DateOnly CreatedDate { get; set;}
+    public DateOnly DateCreated { get; set;}
     public Guid GameCreatorId { get; set; }
     public Studio? GameCreator{ get; set; }
 
@@ -20,7 +20,7 @@ public class Game : IDated
         Title = Title,
         Description = Description,
         CoverImageUrl = CoverImageUrl,
-        CreatedDate = CreatedDate,
+        CreatedDate = DateCreated,
         GameStudioId = GameCreatorId,
         GameCreator = GameCreator?.ToDto(),
     };

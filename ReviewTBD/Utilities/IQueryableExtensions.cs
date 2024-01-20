@@ -16,8 +16,8 @@ public static class QueryableExtensions
         }
 
         return query.Where(item =>
-            (!from.HasValue || item.CreatedDate >= from.Value) &&
-            (!to.HasValue || item.CreatedDate <= to.Value)
+            (!from.HasValue || item.DateCreated >= from.Value) &&
+            (!to.HasValue || item.DateCreated <= to.Value)
         );
     }
 }

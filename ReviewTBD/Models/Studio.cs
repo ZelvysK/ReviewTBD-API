@@ -10,7 +10,7 @@ public class Studio : IDated
     public string Name { get; set; }
     public string Description { get; set; }
     public string ImageUrl { get; set; }
-    public DateOnly CreatedDate { get; set; }
+    public DateOnly DateCreated { get; set; }
     public StudioType Type { get; set; }
 
     public StudioDto ToDto() => new()
@@ -19,7 +19,7 @@ public class Studio : IDated
         Name = Name,
         Description = Description,
         ImageUrl = ImageUrl,
-        CreatedDate = CreatedDate,
+        DateCreated = DateCreated,
         Type = Type,
     };
 }
