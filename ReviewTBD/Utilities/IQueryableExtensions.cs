@@ -7,8 +7,8 @@ public static class QueryableExtensions
     public static IQueryable<T> AddPagination<T>(this IQueryable<T> query, int offset, int limit) =>
         query.Skip(offset).Take(limit);
 
-    public static IQueryable<T> FilterByDateFounded<T>(this IQueryable<T> query, DateOnly? from, DateOnly? to)
-        where T : IFounded
+    public static IQueryable<T> FilterByDateCreated<T>(this IQueryable<T> query, DateOnly? from, DateOnly? to)
+        where T : IDated
     {
         if (from.HasValue && to.HasValue && from.Value > to.Value)
         {
@@ -16,8 +16,8 @@ public static class QueryableExtensions
         }
 
         return query.Where(item =>
-            (!from.HasValue || item.FoundedDate >= from.Value) &&
-            (!to.HasValue || item.FoundedDate <= to.Value)
+            (!from.HasValue || item.DateCreated >= from.Value) &&
+            (!to.HasValue || item.DateCreated <= to.Value)
         );
     }
 }

@@ -1,27 +1,40 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
+using ReviewTBDAPI.Contracts.Queries;
+using ReviewTBDAPI.Utilities;
 
 namespace ReviewTBDAPI.Services;
 
 public interface IMovieService
 {
-    Task<MovieDto[]> GetAllMoviesAsync();
-    Task<MovieDto[]> GetMoviesByStudioAsync(Guid movieStudioId);
+    Task<PaginatedResult<MovieDto>> GetAllMoviesAsync(EntryQuery filters);
+    Task<PaginatedResult<MovieDto>> GetMoviesByStudioAsync(EntryQuery filters, Guid movieStudioId);
     Task<MovieDto?> GetMovieWithStudioByIdAsync(Guid id);
 }
 
 public class MovieService(ReviewContext context, ILogger<MovieService> logger) : IMovieService
 {
-    public async Task<MovieDto[]> GetAllMoviesAsync() {
-        logger.LogInformation("Get all Movies");
+    public async Task<PaginatedResult<MovieDto>> GetAllMoviesAsync(EntryQuery filters) {
+        logger.LogInformation("Get all Movies with filters: {FIlters}", filters);
 
-        var entries = await context.Movies
-            .AsNoTracking()
+        var query = context.Movies.AsNoTracking();
+
+        var entries = await query
+            .FilterByDateCreated(filters.From, filters.To)
+            .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
+
+        var totalCount = await query.CountAsync();
 
         var result = entries.Select(e => e.ToDto()).ToArray();
 
-        return result;
+        return new PaginatedResult<MovieDto>
+        {
+            Limit = filters.Limit,
+            Offset = filters.Offset,
+            Result = result,
+            Total = totalCount,
+        };
     }
 
     public async Task<MovieDto?> GetMovieWithStudioByIdAsync(Guid id) {
@@ -29,7 +42,7 @@ public class MovieService(ReviewContext context, ILogger<MovieService> logger) :
 
         var entry = await context.Movies
             .AsNoTracking()
-            .Include(s=>s.MovieStudio)
+            .Include(s => s.MovieStudio)
             .FirstOrDefaultAsync(e => e.Id == id);
 
         var result = entry?.ToDto();
@@ -37,16 +50,27 @@ public class MovieService(ReviewContext context, ILogger<MovieService> logger) :
         return result;
     }
 
-    public async Task<MovieDto[]> GetMoviesByStudioAsync(Guid movieStudioId) {
-        logger.LogInformation("Get movie by author: {movieStudioId}", movieStudioId);
+    public async Task<PaginatedResult<MovieDto>> GetMoviesByStudioAsync(EntryQuery filters, Guid movieStudioId) {
+        logger.LogInformation("Get movie by author: {movieStudioId}, with filters: {Filters}", movieStudioId, filters);
 
-        var entries = await context.Movies
-            .AsNoTracking()
+        var query = context.Movies.AsNoTracking();
+
+        var entries = await query
             .Where(a => a.MovieStudioId == movieStudioId)
+            .FilterByDateCreated(filters.From, filters.To)
+            .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
+
+        var totalCount = await query.CountAsync();
 
         var result = entries.Select(b => b.ToDto()).ToArray();
 
-        return result;
+        return new PaginatedResult<MovieDto>
+        {
+            Limit = filters.Limit,
+            Offset = filters.Offset,
+            Result = result,
+            Total = totalCount,
+        };
     }
 }

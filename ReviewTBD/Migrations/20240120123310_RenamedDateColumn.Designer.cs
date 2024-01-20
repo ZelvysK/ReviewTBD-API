@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReviewTBDAPI;
 
@@ -11,9 +12,11 @@ using ReviewTBDAPI;
 namespace ReviewTBDAPI.Migrations
 {
     [DbContext(typeof(ReviewContext))]
-    partial class ReviewContextModelSnapshot : ModelSnapshot
+    [Migration("20240120123310_RenamedDateColumn")]
+    partial class RenamedDateColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace ReviewTBDAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("DateCreated")
+                    b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
@@ -63,7 +66,7 @@ namespace ReviewTBDAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("DateCreated")
+                    b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
@@ -94,7 +97,7 @@ namespace ReviewTBDAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("DateCreated")
+                    b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
@@ -121,7 +124,7 @@ namespace ReviewTBDAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("DateCreated")
+                    b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Description")

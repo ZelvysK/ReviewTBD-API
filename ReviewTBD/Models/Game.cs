@@ -1,14 +1,16 @@
 ﻿using ReviewTBDAPI.Contracts;
+using ReviewTBDAPI.Shared;
+
 
 namespace ReviewTBDAPI.Models;
 
-public class Game
+public class Game : IDated
 {
     public Guid Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public string CoverImageUrl { get; set; }
-    public DateOnly ReleaseDate { get; set;}
+    public DateOnly DateCreated { get; set;}
     public Guid GameCreatorId { get; set; }
     public Studio? GameCreator{ get; set; }
 
@@ -18,7 +20,7 @@ public class Game
         Title = Title,
         Description = Description,
         CoverImageUrl = CoverImageUrl,
-        ReleaseDate = ReleaseDate,
+        DateCreated = DateCreated,
         GameStudioId = GameCreatorId,
         GameCreator = GameCreator?.ToDto(),
     };

@@ -1,27 +1,41 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
+using ReviewTBDAPI.Contracts.Queries;
+using ReviewTBDAPI.Utilities;
+
 
 namespace ReviewTBDAPI.Services;
 
 public interface IAnimeService
 {
-    Task<AnimeDto[]> GetAllAnimesAsync();
-    Task<AnimeDto[]> GetAnimeByStudioAsync(Guid animeStudioId);
+    Task<PaginatedResult<AnimeDto>> GetAllAnimesAsync(EntryQuery filters);
+    Task<PaginatedResult<AnimeDto>> GetAnimeByStudioAsync(EntryQuery filters,Guid animeStudioId);
     Task<AnimeDto?> GetAnimeWithStudioByIdAsync(Guid id);
 }
 
 public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) : IAnimeService
 {
-    public async Task<AnimeDto[]> GetAllAnimesAsync() {
-        logger.LogInformation("Get all Anime");
+    public async Task<PaginatedResult<AnimeDto>> GetAllAnimesAsync(EntryQuery filters) {
+        logger.LogInformation("Get all Anime, filters: {Filters}", filters);
 
-        var entries = await context.Animes
-            .AsNoTracking()
+        var query = context.Animes.AsNoTracking();
+
+        var entries = await query
+            .FilterByDateCreated(filters.From, filters.To)
+            .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
+
+        var totalCount = await query.CountAsync();
 
         var result = entries.Select(a => a.ToDto()).ToArray();
 
-        return result;
+        return new PaginatedResult<AnimeDto>
+        {
+            Limit = filters.Limit,
+            Offset = filters.Offset,
+            Result = result,
+            Total = totalCount
+        }; ;
     }
 
     public async Task<AnimeDto?> GetAnimeWithStudioByIdAsync(Guid id) {
@@ -33,20 +47,31 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
             .FirstOrDefaultAsync(e => e.Id == id);
 
         var result = entry?.ToDto();
-        
+
         return result;
     }
 
-    public async Task<AnimeDto[]> GetAnimeByStudioAsync(Guid animeStudioId) {
-        logger.LogInformation("Get Anime by author: {animeStudioId}", animeStudioId);
+    public async Task<PaginatedResult<AnimeDto>> GetAnimeByStudioAsync(EntryQuery filters, Guid animeStudioId) {
+        logger.LogInformation("Get Anime by author: {animeStudioId}, with filters: {Filters}", animeStudioId, filters);
 
-        var entries = await context.Animes
-            .AsNoTracking()
+        var query = context.Animes.AsNoTracking();
+
+        var entries = await query
             .Where(a => a.AnimeStudioId == animeStudioId)
+            .FilterByDateCreated(filters.From, filters.To)
+            .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
+
+        var totalCount = await query.CountAsync();
 
         var result = entries.Select(b => b.ToDto()).ToArray();
 
-        return result;
+        return new PaginatedResult<AnimeDto>
+        {
+            Limit = filters.Limit,
+            Offset = filters.Offset,
+            Result = result,
+            Total = totalCount
+        }; ;
     }
 }

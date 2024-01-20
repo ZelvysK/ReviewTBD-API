@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReviewTBDAPI.Contracts;
+using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Services;
 
 namespace ReviewTBDAPI.Controllers;
@@ -9,8 +10,8 @@ namespace ReviewTBDAPI.Controllers;
 public class GameController(IGameService gameService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<GameDto[]>> GetAllGames() {
-        var entries = await gameService.GetAllGamesAsync();
+    public async Task<ActionResult<GameDto[]>> GetAllGames([FromQuery] EntryQuery filters) {
+        var entries = await gameService.GetAllGamesAsync(filters);
 
         return Ok(entries);
     }
@@ -28,8 +29,8 @@ public class GameController(IGameService gameService) : ControllerBase
     }
 
     [HttpGet("GameCreator/{creatorId}")]
-    public async Task<ActionResult<IEnumerable<GameDto>>> GetGamesByCreator(Guid creatorId) {
-        var entries = await gameService.GetGamesByCreatorAsync(creatorId);
+    public async Task<ActionResult<IEnumerable<GameDto>>> GetGamesByCreator([FromQuery] EntryQuery filters, Guid creatorId) {
+        var entries = await gameService.GetGamesByCreatorAsync(filters, creatorId);
 
         return Ok(entries);
     }

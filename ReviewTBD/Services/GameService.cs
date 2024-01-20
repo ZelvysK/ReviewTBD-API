@@ -1,27 +1,64 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
+using ReviewTBDAPI.Contracts.Queries;
+using ReviewTBDAPI.Utilities;
 
 namespace ReviewTBDAPI.Services;
 
 public interface IGameService
 {
-    Task<GameDto[]> GetAllGamesAsync();
-    Task<GameDto[]> GetGamesByCreatorAsync(Guid gameCreatorId);
+    Task<PaginatedResult<GameDto>> GetAllGamesAsync(EntryQuery filters);
+    Task<PaginatedResult<GameDto>> GetGamesByCreatorAsync(EntryQuery filters, Guid gameCreatorId);
     Task<GameDto?> GetGameWithCreatorByIdAsync(Guid id);
 }
 
 public class GameService(ReviewContext context, ILogger<GameService> logger) : IGameService
 {
-    public async Task<GameDto[]> GetAllGamesAsync() {
-        logger.LogInformation("Get all games");
+    public async Task<PaginatedResult<GameDto>> GetAllGamesAsync(EntryQuery filters) {
+        logger.LogInformation("Get all games, filters: {Filters}", filters);
 
-        var entries = await context.Games
-            .AsNoTracking()
+        var query = context.Games.AsNoTracking();
+
+        var entries = await query
+            .FilterByDateCreated(filters.From, filters.To)
+            .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
+
+        var totalCount = await query.CountAsync();
 
         var result = entries.Select(e => e.ToDto()).ToArray();
 
-        return result;
+        return new PaginatedResult<GameDto>
+        {
+            Limit = filters.Limit,
+            Offset = filters.Offset,
+            Result = result,
+            Total = totalCount
+        };
+    }
+
+    public async Task<PaginatedResult<GameDto>> GetGamesByCreatorAsync(EntryQuery filters, Guid gameCreatorId) {
+        logger.LogInformation("Get game by creator: {gameCreatorId} with filters: {Filters}", gameCreatorId, filters);
+
+        var query = context.Games.AsNoTracking();
+
+        var entries = await query
+            .Where(a => a.GameCreatorId == gameCreatorId)
+            .FilterByDateCreated(filters.From, filters.To)
+            .AddPagination(filters.Offset, filters.Limit)
+            .ToArrayAsync();
+
+        var totalCount = await query.CountAsync();
+
+        var result = entries.Select(b => b.ToDto()).ToArray();
+
+        return new PaginatedResult<GameDto>
+        {
+            Limit = filters.Limit,
+            Offset = filters.Offset,
+            Result = result,
+            Total = totalCount
+        };
     }
 
     public async Task<GameDto?> GetGameWithCreatorByIdAsync(Guid id) {
@@ -29,23 +66,10 @@ public class GameService(ReviewContext context, ILogger<GameService> logger) : I
 
         var entry = await context.Games
             .AsNoTracking()
-            .Include(s=>s.GameCreator)
+            .Include(s => s.GameCreator)
             .FirstOrDefaultAsync(e => e.Id == id);
 
         var result = entry?.ToDto();
-
-        return result;
-    }
-
-    public async Task<GameDto[]> GetGamesByCreatorAsync(Guid gameCreatorId) {
-        logger.LogInformation("Get game by creator: {gameCreatorId}", gameCreatorId);
-
-        var entries = await context.Games
-            .AsNoTracking()
-            .Where(a => a.GameCreatorId == gameCreatorId)
-            .ToArrayAsync();
-
-        var result = entries.Select(b => b.ToDto()).ToArray();
 
         return result;
     }
