@@ -25,4 +25,27 @@ public class StudioController(IStudioService studioService) : ControllerBase
             : NotFound();
     }
 
+    [HttpPost]
+    public async Task<ActionResult<StudioDto>> CreateStudio([FromBody] StudioDto data) {
+
+        if (data == null)
+        {
+            return BadRequest("Invalid data");
+        }
+
+        var studioDto = new StudioDto
+        {
+            Id = Guid.NewGuid(),
+            Name = data.Name,
+            Description = data.Description,
+            DateCreated = data.DateCreated,
+            ImageUrl = data.ImageUrl,
+            Type = data.Type,
+        };
+
+        studioService.CreateStudio(studioDto);
+
+        return Ok(new { Message = "Studio created successfully" });
+    }
+
 }

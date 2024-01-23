@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
+using ReviewTBDAPI.Models;
 using ReviewTBDAPI.Utilities;
 
 namespace ReviewTBDAPI.Services;
 
 public interface IStudioService
 {
+    Task CreateStudio(StudioDto studioDto);
     Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters);
     Task<StudioDto?> GetStudioByIdAsync(Guid id);
 }
@@ -53,5 +55,21 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         var result = entry?.ToDto();
 
         return result;
+    }
+
+    public async Task CreateStudio(StudioDto studioDto) {
+
+        var studio = new Studio
+        {
+            Id = studioDto.Id,
+            Name = studioDto.Name,
+            Description = studioDto.Description,
+            ImageUrl = studioDto.ImageUrl,
+            DateCreated = studioDto.DateCreated,
+            Type = studioDto.Type,
+        };
+
+        context.Studios.Add(studio);
+        context.SaveChanges();
     }
 }
