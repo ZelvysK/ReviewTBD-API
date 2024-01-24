@@ -28,14 +28,8 @@ public class StudioController(IStudioService studioService) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<StudioDto>> CreateStudio([FromBody] StudioDto data) {
 
-        if (data == null)
-        {
-            return BadRequest("Invalid data");
-        }
-
         var studioDto = new StudioDto
         {
-            Id = Guid.NewGuid(),
             Name = data.Name,
             Description = data.Description,
             DateCreated = data.DateCreated,
@@ -43,9 +37,9 @@ public class StudioController(IStudioService studioService) : ControllerBase
             Type = data.Type,
         };
 
-        studioService.CreateStudio(studioDto);
+        Guid newStudioId = await studioService.CreateStudioAsync(studioDto);
 
-        return Ok(new { Message = "Studio created successfully" });
+        return CreatedAtAction(nameof(GetStudioById), new { id = newStudioId }, new { Message = "Studio created successfully", Id = newStudioId });
     }
 
 }

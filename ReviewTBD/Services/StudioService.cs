@@ -8,7 +8,7 @@ namespace ReviewTBDAPI.Services;
 
 public interface IStudioService
 {
-    Task CreateStudio(StudioDto studioDto);
+    Task<Guid> CreateStudioAsync(StudioDto studioDto);
     Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters);
     Task<StudioDto?> GetStudioByIdAsync(Guid id);
 }
@@ -57,11 +57,10 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         return result;
     }
 
-    public async Task CreateStudio(StudioDto studioDto) {
+    public async Task<Guid> CreateStudioAsync(StudioDto studioDto) {
 
         var studio = new Studio
         {
-            Id = studioDto.Id,
             Name = studioDto.Name,
             Description = studioDto.Description,
             ImageUrl = studioDto.ImageUrl,
@@ -70,6 +69,8 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         };
 
         context.Studios.Add(studio);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
+
+        return studio.Id;
     }
 }
