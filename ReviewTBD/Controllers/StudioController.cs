@@ -25,4 +25,20 @@ public class StudioController(IStudioService studioService) : ControllerBase
             : NotFound();
     }
 
+    [HttpPost]
+    public async Task<IActionResult> CreateStudio([FromBody] StudioDto input) {
+
+        var id = await studioService.CreateStudioAsync(input);
+
+        return CreatedAtAction(nameof(GetStudioById), new { id }, new { Message = "Studio created successfully", Id = id });
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteStudio(Guid id) {
+        var deleted = await studioService.DeleteStudioAsync(id);
+
+        return deleted ? NoContent() : NotFound();
+
+    }
+
 }

@@ -22,4 +22,13 @@ public class Studio : IDated
         DateCreated = DateCreated,
         Type = Type,
     };
+
+    public static Studio FromDto(StudioDto dto) => new()
+    {
+        Name = dto.Name,
+        Description = dto.Description,
+        ImageUrl = dto.ImageUrl,
+        DateCreated = dto.DateCreated,
+        Type = dto.Type,
+    };
 }
