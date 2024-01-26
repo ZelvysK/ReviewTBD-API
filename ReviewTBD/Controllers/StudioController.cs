@@ -7,17 +7,16 @@ namespace ReviewTBDAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class StudioController(IStudioService studioService) : ControllerBase
-{
+public class StudioController(IStudioService studioService) : ControllerBase {
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<StudioDto>>> GetAllStudios([FromQuery] StudioQuery filters) {
+    public async Task<ActionResult<PaginatedResult<Contracts.StudioDto>>> GetAllStudios([FromQuery] StudioQuery filters) {
         var result = await studioService.GetAllStudiosAsync(filters);
 
         return Ok(result);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<StudioDto[]>> GetStudioById(Guid id) {
+    public async Task<ActionResult<Contracts.StudioDto[]>> GetStudioById(Guid id) {
         var entry = await studioService.GetStudioByIdAsync(id);
 
         return entry is not null
@@ -26,7 +25,7 @@ public class StudioController(IStudioService studioService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateStudio([FromBody] StudioDto input) {
+    public async Task<Microsoft.AspNetCore.Mvc.IActionResult> CreateStudio([FromBody] StudioDto input) {
 
         var id = await studioService.CreateStudioAsync(input);
 
@@ -34,11 +33,24 @@ public class StudioController(IStudioService studioService) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteStudio(Guid id) {
+    public async Task<Microsoft.AspNetCore.Mvc.IActionResult> DeleteStudio(Guid id) {
         var deleted = await studioService.DeleteStudioAsync(id);
 
         return deleted ? NoContent() : NotFound();
 
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<Contracts.StudioDto[]>> UpdateStudio(Guid id, [FromBody] StudioDto input) {
+
+        if (input == null)
+        {
+            return BadRequest("Input data is null");
+        }
+
+        await studioService.UpdateStudioAsync(id, input);
+
+        return Ok(); 
     }
 
 }
