@@ -13,7 +13,7 @@ public interface IStudioService
     Task<bool> DeleteStudioAsync(Guid id);
     Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters);
     Task<StudioDto?> GetStudioByIdAsync(Guid id);
-    Task UpdateStudioAsync(Guid id, StudioDto input);
+    Task<bool> UpdateStudioAsync(Guid id, StudioDto input);
 }
 
 public class StudioService(ReviewContext context, ILogger<StudioService> logger) : IStudioService
@@ -87,20 +87,19 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<IActionResult> UpdateStudioAsync(Guid id, StudioDto input) {
-        var existingStudio = await context.Studios.FindAsync(id);
+    public async Task<bool> UpdateStudioAsync(Guid id, StudioDto input) {
+        var existingStudio = await context.Studios.FirstOrDefaultAsync(e => e.Id == id);
 
-        if (existingStudio != null)
+        if (existingStudio is null)
         {
-            existingStudio.Name = input.Name;
-            existingStudio.Description = input.Description;
-            existingStudio.ImageUrl = input.ImageUrl;
-            existingStudio.Type = input.Type;
-
-            await context.SaveChangesAsync();
-            return Ok(); // or any other appropriate IActionResult for success
+            return false;
         }
 
-        return NotFound(); // or any other appropriate IActionResult for not found
+        existingStudio.Name = input.Name;
+        existingStudio.Description = input.Description;
+        existingStudio.ImageUrl = input.ImageUrl;
+        existingStudio.Type = input.Type;
+
+        return await context.SaveChangesAsync() > 0;
     }
 }
