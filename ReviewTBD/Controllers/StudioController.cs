@@ -41,7 +41,7 @@ public class StudioController(IStudioService studioService) : ControllerBase {
     }
 
     [HttpPut("Update/{id:guid}")]
-    public async Task<ActionResult<StudioDto[]>> UpdateStudio(Guid id, [FromBody] StudioDto input) {
+    public async Task<ActionResult<StudioDto>> UpdateStudio(Guid id, [FromBody] StudioDto input) {
 
         var updated = await studioService.UpdateStudioAsync(id, input);
 
