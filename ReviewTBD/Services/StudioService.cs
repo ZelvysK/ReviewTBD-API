@@ -13,7 +13,7 @@ public interface IStudioService
     Task<bool> DeleteStudioAsync(Guid id);
     Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters);
     Task<StudioDto?> GetStudioByIdAsync(Guid id);
-    Task<bool> UpdateStudioAsync(Guid id, StudioDto input);
+    Task<ActionResult<StudioDto?>> UpdateStudioAsync(Guid id, StudioDto input);
 }
 
 public class StudioService(ReviewContext context, ILogger<StudioService> logger) : IStudioService
@@ -87,19 +87,20 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> UpdateStudioAsync(Guid id, StudioDto input) {
+    public async Task<ActionResult<StudioDto?>> UpdateStudioAsync(Guid id, StudioDto input) {
         var existingStudio = await context.Studios.FirstOrDefaultAsync(e => e.Id == id);
 
         if (existingStudio is null)
         {
-            return false;
+            return null;
         }
 
-        existingStudio.Name = input.Name;
-        existingStudio.Description = input.Description;
-        existingStudio.ImageUrl = input.ImageUrl;
-        existingStudio.Type = input.Type;
+        existingStudio.Update(input);
 
-        return await context.SaveChangesAsync() > 0;
+        await context.SaveChangesAsync();
+
+        var result = await context.Studios.FirstOrDefaultAsync(e=> e.Id == id);
+
+        return result?.ToDto();
     }
 }
