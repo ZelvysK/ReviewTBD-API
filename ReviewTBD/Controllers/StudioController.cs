@@ -16,7 +16,7 @@ public class StudioController(IStudioService studioService) : ControllerBase {
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<StudioDto[]>> GetStudioById(Guid id) {
+    public async Task<ActionResult<StudioDto>> GetStudioById(Guid id) {
         var entry = await studioService.GetStudioByIdAsync(id);
 
         return entry is not null
