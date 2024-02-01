@@ -7,8 +7,7 @@ namespace ReviewTBDAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class StudioController(IStudioService studioService) : ControllerBase
-{
+public class StudioController(IStudioService studioService) : ControllerBase {
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<StudioDto>>> GetAllStudios([FromQuery] StudioQuery filters) {
         var result = await studioService.GetAllStudiosAsync(filters);
@@ -17,7 +16,7 @@ public class StudioController(IStudioService studioService) : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<StudioDto[]>> GetStudioById(Guid id) {
+    public async Task<ActionResult<StudioDto>> GetStudioById(Guid id) {
         var entry = await studioService.GetStudioByIdAsync(id);
 
         return entry is not null
@@ -39,6 +38,16 @@ public class StudioController(IStudioService studioService) : ControllerBase
 
         return deleted ? NoContent() : NotFound();
 
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<StudioDto>> UpdateStudio(Guid id, [FromBody] StudioDto input) {
+
+        var updated = await studioService.UpdateStudioAsync(id, input);
+
+        return updated is not null 
+            ? Ok(updated)
+            : NotFound();
     }
 
 }

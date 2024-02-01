@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Models;
@@ -12,6 +13,7 @@ public interface IStudioService
     Task<bool> DeleteStudioAsync(Guid id);
     Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters);
     Task<StudioDto?> GetStudioByIdAsync(Guid id);
+    Task<ActionResult<StudioDto?>> UpdateStudioAsync(Guid id, StudioDto input);
 }
 
 public class StudioService(ReviewContext context, ILogger<StudioService> logger) : IStudioService
@@ -83,5 +85,22 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         context.Studios.Remove(studio);
 
         return await context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<ActionResult<StudioDto?>> UpdateStudioAsync(Guid id, StudioDto input) {
+        var existingStudio = await context.Studios.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (existingStudio is null)
+        {
+            return null;
+        }
+
+        existingStudio.Update(input);
+
+        await context.SaveChangesAsync();
+
+        var result = await context.Studios.FirstOrDefaultAsync(e=> e.Id == id);
+
+        return result?.ToDto();
     }
 }

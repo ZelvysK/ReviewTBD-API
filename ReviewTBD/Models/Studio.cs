@@ -31,4 +31,12 @@ public class Studio : IDated
         DateCreated = dto.DateCreated,
         Type = dto.Type,
     };
+
+    public void Update(StudioDto update) {
+        Name = update.Name;
+        Description = update.Description;
+        ImageUrl = update.ImageUrl;
+        DateCreated = update.DateCreated;
+        Type = update.Type;
+    }
 }
