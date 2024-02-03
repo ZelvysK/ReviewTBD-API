@@ -34,4 +34,12 @@ public class MovieController(IMovieService movieService) : ControllerBase
 
         return Ok(entries);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateMovie([FromBody] MovieDto input) {
+
+        var id = await movieService.CreateMovieAsync(input);
+
+        return CreatedAtAction(nameof(GetMoviesById), new { id }, new { Message = "Movie created successfully", Id = id });
+    }
 }

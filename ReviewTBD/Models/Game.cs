@@ -21,7 +21,16 @@ public class Game : IDated
         Description = Description,
         CoverImageUrl = CoverImageUrl,
         DateCreated = DateCreated,
-        GameStudioId = GameCreatorId,
+        GameCreatorId = GameCreatorId,
         GameCreator = GameCreator?.ToDto(),
+    };
+
+    public static Game FromDto(GameDto dto) => new()
+    {
+        Title = dto.Title,
+        Description = dto.Description,
+        CoverImageUrl = dto.CoverImageUrl,
+        DateCreated = dto.DateCreated,
+        GameCreatorId = dto.GameCreatorId,
     };
 }

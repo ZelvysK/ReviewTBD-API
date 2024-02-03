@@ -34,4 +34,12 @@ public class GameController(IGameService gameService) : ControllerBase
 
         return Ok(entries);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateGame([FromBody] GameDto input) {
+
+        var id = await gameService.CreateGameAsync(input);
+
+        return CreatedAtAction(nameof(GetGamesById), new { id }, new { Message = "Game created successfully", Id = id });
+    }
 }

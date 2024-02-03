@@ -27,4 +27,12 @@ public class AnimeController(IAnimeService animeService) : ControllerBase
 
         return Ok(entry);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateStudio([FromBody] AnimeDto input) {
+
+        var id = await animeService.CreateAnimeAsync(input);
+
+        return CreatedAtAction(nameof(GetAnimeById), new { id }, new { Message = "Anime created successfully", Id = id });
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
+using ReviewTBDAPI.Models;
 using ReviewTBDAPI.Utilities;
 
 
@@ -11,6 +12,7 @@ public interface IAnimeService
     Task<PaginatedResult<AnimeDto>> GetAllAnimesAsync(EntryQuery filters);
     Task<PaginatedResult<AnimeDto>> GetAnimeByStudioAsync(EntryQuery filters,Guid animeStudioId);
     Task<AnimeDto?> GetAnimeWithStudioByIdAsync(Guid id);
+    Task<Guid> CreateAnimeAsync(AnimeDto animeDto);
 }
 
 public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) : IAnimeService
@@ -73,5 +75,16 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
             Result = result,
             Total = totalCount
         }; ;
+    }
+
+    public async Task<Guid> CreateAnimeAsync(AnimeDto animeDto) {
+
+        var anime = Anime.FromDto(animeDto);
+
+        context.Animes.Add(anime);
+
+        await context.SaveChangesAsync();
+
+        return anime.Id;
     }
 }

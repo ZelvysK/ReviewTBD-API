@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
+using ReviewTBDAPI.Models;
 using ReviewTBDAPI.Utilities;
 
 namespace ReviewTBDAPI.Services;
@@ -10,6 +11,7 @@ public interface IGameService
     Task<PaginatedResult<GameDto>> GetAllGamesAsync(EntryQuery filters);
     Task<PaginatedResult<GameDto>> GetGamesByCreatorAsync(EntryQuery filters, Guid gameCreatorId);
     Task<GameDto?> GetGameWithCreatorByIdAsync(Guid id);
+    Task<Guid> CreateGameAsync(GameDto gameDto);
 }
 
 public class GameService(ReviewContext context, ILogger<GameService> logger) : IGameService
@@ -72,5 +74,16 @@ public class GameService(ReviewContext context, ILogger<GameService> logger) : I
         var result = entry?.ToDto();
 
         return result;
+    }
+
+    public async Task<Guid> CreateGameAsync(GameDto gameDto) {
+
+        var game = Game.FromDto(gameDto);
+
+        context.Games.Add(game);
+
+        await context.SaveChangesAsync();
+
+        return game.Id;
     }
 }
