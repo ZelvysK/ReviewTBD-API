@@ -22,6 +22,11 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
 
         var query = context.Animes.AsNoTracking();
 
+        if (!string.IsNullOrWhiteSpace(filters.Term))
+        {
+            query = query.Where(s => s.Title.Contains(filters.Term) || s.Description.Contains(filters.Term));
+        }
+
         var entries = await query
             .FilterByDateCreated(filters.From, filters.To)
             .AddPagination(filters.Offset, filters.Limit)

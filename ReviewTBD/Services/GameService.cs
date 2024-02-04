@@ -21,6 +21,11 @@ public class GameService(ReviewContext context, ILogger<GameService> logger) : I
 
         var query = context.Games.AsNoTracking();
 
+        if (!string.IsNullOrWhiteSpace(filters.Term))
+        {
+            query = query.Where(s => s.Title.Contains(filters.Term) || s.Description.Contains(filters.Term));
+        }
+
         var entries = await query
             .FilterByDateCreated(filters.From, filters.To)
             .AddPagination(filters.Offset, filters.Limit)

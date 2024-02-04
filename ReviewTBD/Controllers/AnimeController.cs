@@ -10,7 +10,7 @@ namespace ReviewTBDAPI.Controllers;
 public class AnimeController(IAnimeService animeService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<AnimeDto[]>> GetAllAnimes([FromQuery] EntryQuery filters) {
+    public async Task<ActionResult<PaginatedResult<AnimeDto>>> GetAllAnimes([FromQuery] EntryQuery filters) {
         var entries = await animeService.GetAllAnimesAsync(filters);
 
         return Ok(entries);
