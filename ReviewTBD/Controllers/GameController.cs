@@ -42,4 +42,22 @@ public class GameController(IGameService gameService) : ControllerBase
 
         return CreatedAtAction(nameof(GetGamesById), new { id }, new { Message = "Game created successfully", Id = id });
     }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteGame(Guid id) {
+        var deleted = await gameService.DeleteGameAsync(id);
+
+        return deleted ? NoContent() : NotFound();
+
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<GameDto>> UpdateGame(Guid id, [FromBody] GameDto input) {
+
+        var updated = await gameService.UpdateGameAsync(id, input);
+
+        return updated is not null
+            ? Ok(updated)
+            : NotFound();
+    }
 }

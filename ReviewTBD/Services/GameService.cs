@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Models;
@@ -12,6 +13,8 @@ public interface IGameService
     Task<PaginatedResult<GameDto>> GetGamesByCreatorAsync(EntryQuery filters, Guid gameCreatorId);
     Task<GameDto?> GetGameWithCreatorByIdAsync(Guid id);
     Task<Guid> CreateGameAsync(GameDto gameDto);
+    Task<bool> DeleteGameAsync(Guid id);
+    Task<ActionResult<GameDto?>> UpdateGameAsync(Guid id, GameDto input);
 }
 
 public class GameService(ReviewContext context, ILogger<GameService> logger) : IGameService
@@ -90,5 +93,35 @@ public class GameService(ReviewContext context, ILogger<GameService> logger) : I
         await context.SaveChangesAsync();
 
         return game.Id;
+    }
+
+    public async Task<bool> DeleteGameAsync(Guid id) {
+        var game = await context.Games.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (game is null)
+        {
+            return false;
+        }
+
+        context.Games.Remove(game);
+
+        return await context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<ActionResult<GameDto?>> UpdateGameAsync(Guid id, GameDto input) {
+        var existingGame = await context.Games.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (existingGame is null)
+        {
+            return null;
+        }
+
+        existingGame.Update(input);
+
+        await context.SaveChangesAsync();
+
+        var result = await context.Games.FirstOrDefaultAsync(e => e.Id == id);
+
+        return result?.ToDto();
     }
 }

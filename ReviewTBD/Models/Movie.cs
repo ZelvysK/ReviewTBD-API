@@ -32,4 +32,11 @@ public class Movie : IDated
         DateCreated = dto.DateCreated,
         MovieStudioId = dto.MovieStudioId,
     };
+
+    public void Update(MovieDto update) {
+        Title = update.Title;
+        Description = update.Description;
+        CoverUrl = update.CoverUrl;
+        DateCreated = update.DateCreated;
+    }
 }

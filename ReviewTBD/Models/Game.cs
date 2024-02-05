@@ -33,4 +33,11 @@ public class Game : IDated
         DateCreated = dto.DateCreated,
         GameCreatorId = dto.GameCreatorId,
     };
+
+    public void Update(GameDto update) {
+        Title = update.Title;
+        Description = update.Description;
+        CoverImageUrl = update.CoverImageUrl;
+        DateCreated = update.DateCreated;
+    }
 }

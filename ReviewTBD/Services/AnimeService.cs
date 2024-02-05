@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Models;
@@ -13,6 +14,8 @@ public interface IAnimeService
     Task<PaginatedResult<AnimeDto>> GetAnimeByStudioAsync(EntryQuery filters,Guid animeStudioId);
     Task<AnimeDto?> GetAnimeWithStudioByIdAsync(Guid id);
     Task<Guid> CreateAnimeAsync(AnimeDto animeDto);
+    Task<bool> DeleteAnimeAsync(Guid id);
+    Task<ActionResult<AnimeDto?>> UpdateAnimeAsync(Guid id, AnimeDto input);
 }
 
 public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) : IAnimeService
@@ -91,5 +94,35 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
         await context.SaveChangesAsync();
 
         return anime.Id;
+    }
+
+    public async Task<bool> DeleteAnimeAsync(Guid id) {
+        var anime = await context.Animes.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (anime is null)
+        {
+            return false;
+        }
+
+        context.Animes.Remove(anime);
+
+        return await context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<ActionResult<AnimeDto?>> UpdateAnimeAsync(Guid id, AnimeDto input) {
+        var existingAnime = await context.Animes.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (existingAnime is null)
+        {
+            return null;
+        }
+
+        existingAnime.Update(input);
+
+        await context.SaveChangesAsync();
+
+        var result = await context.Animes.FirstOrDefaultAsync(e => e.Id == id);
+
+        return result?.ToDto();
     }
 }

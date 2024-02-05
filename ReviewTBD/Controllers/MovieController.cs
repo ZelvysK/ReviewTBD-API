@@ -42,4 +42,22 @@ public class MovieController(IMovieService movieService) : ControllerBase
 
         return CreatedAtAction(nameof(GetMoviesById), new { id }, new { Message = "Movie created successfully", Id = id });
     }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteMovie(Guid id) {
+        var deleted = await movieService.DeleteMovieAsync(id);
+
+        return deleted ? NoContent() : NotFound();
+
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<MovieDto>> UpdateMovie(Guid id, [FromBody] MovieDto input) {
+
+        var updated = await movieService.UpdateMovieAsync(id, input);
+
+        return updated is not null
+            ? Ok(updated)
+            : NotFound();
+    }
 }

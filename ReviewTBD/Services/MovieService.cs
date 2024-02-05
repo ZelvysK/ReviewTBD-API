@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Models;
@@ -12,6 +13,8 @@ public interface IMovieService
     Task<PaginatedResult<MovieDto>> GetMoviesByStudioAsync(EntryQuery filters, Guid movieStudioId);
     Task<MovieDto?> GetMovieWithStudioByIdAsync(Guid id);
     Task<Guid> CreateMovieAsync(MovieDto movieDto);
+    Task<ActionResult<MovieDto?>> UpdateMovieAsync(Guid id, MovieDto input);
+    Task<bool> DeleteMovieAsync(Guid id);
 }
 
 public class MovieService(ReviewContext context, ILogger<MovieService> logger) : IMovieService
@@ -90,5 +93,35 @@ public class MovieService(ReviewContext context, ILogger<MovieService> logger) :
         await context.SaveChangesAsync();
 
         return movie.Id;
+    }
+
+    public async Task<bool> DeleteMovieAsync(Guid id) {
+        var movie = await context.Movies.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (movie is null)
+        {
+            return false;
+        }
+
+        context.Movies.Remove(movie);
+
+        return await context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<ActionResult<MovieDto?>> UpdateMovieAsync(Guid id, MovieDto input) {
+        var existingMovie = await context.Movies.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (existingMovie is null)
+        {
+            return null;
+        }
+
+        existingMovie.Update(input);
+
+        await context.SaveChangesAsync();
+
+        var result = await context.Movies.FirstOrDefaultAsync(e => e.Id == id);
+
+        return result?.ToDto();
     }
 }

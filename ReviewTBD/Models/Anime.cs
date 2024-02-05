@@ -32,4 +32,11 @@ public class Anime : IDated
         DateCreated = dto.DateCreated,
         AnimeStudioId = dto.AnimeStudioId,
     };
+
+    public void Update(AnimeDto update) {
+        Title = update.Title;
+        Description = update.Description;
+        CoverImageUrl = update.CoverImageUrl;
+        DateCreated = update.DateCreated;
+    }
 }
