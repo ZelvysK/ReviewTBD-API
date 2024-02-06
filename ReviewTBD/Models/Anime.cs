@@ -38,5 +38,6 @@ public class Anime : IDated
         Description = update.Description;
         CoverImageUrl = update.CoverImageUrl;
         DateCreated = update.DateCreated;
+        AnimeStudioId = update.AnimeStudioId;
     }
 }
