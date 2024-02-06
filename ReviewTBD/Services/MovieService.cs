@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
+using ReviewTBDAPI.Models;
 using ReviewTBDAPI.Utilities;
 
 namespace ReviewTBDAPI.Services;
@@ -10,6 +12,9 @@ public interface IMovieService
     Task<PaginatedResult<MovieDto>> GetAllMoviesAsync(EntryQuery filters);
     Task<PaginatedResult<MovieDto>> GetMoviesByStudioAsync(EntryQuery filters, Guid movieStudioId);
     Task<MovieDto?> GetMovieWithStudioByIdAsync(Guid id);
+    Task<Guid> CreateMovieAsync(MovieDto movieDto);
+    Task<ActionResult<MovieDto?>> UpdateMovieAsync(Guid id, MovieDto input);
+    Task<bool> DeleteMovieAsync(Guid id);
 }
 
 public class MovieService(ReviewContext context, ILogger<MovieService> logger) : IMovieService
@@ -18,6 +23,11 @@ public class MovieService(ReviewContext context, ILogger<MovieService> logger) :
         logger.LogInformation("Get all Movies with filters: {FIlters}", filters);
 
         var query = context.Movies.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(filters.Term))
+        {
+            query = query.Where(s => s.Title.Contains(filters.Term) || s.Description.Contains(filters.Term));
+        }
 
         var entries = await query
             .FilterByDateCreated(filters.From, filters.To)
@@ -72,5 +82,46 @@ public class MovieService(ReviewContext context, ILogger<MovieService> logger) :
             Result = result,
             Total = totalCount,
         };
+    }
+
+    public async Task<Guid> CreateMovieAsync(MovieDto movieDto) {
+
+        var movie = Movie.FromDto(movieDto);
+
+        context.Movies.Add(movie);
+
+        await context.SaveChangesAsync();
+
+        return movie.Id;
+    }
+
+    public async Task<bool> DeleteMovieAsync(Guid id) {
+        var movie = await context.Movies.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (movie is null)
+        {
+            return false;
+        }
+
+        context.Movies.Remove(movie);
+
+        return await context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<ActionResult<MovieDto?>> UpdateMovieAsync(Guid id, MovieDto input) {
+        var existingMovie = await context.Movies.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (existingMovie is null)
+        {
+            return null;
+        }
+
+        existingMovie.Update(input);
+
+        await context.SaveChangesAsync();
+
+        var result = await context.Movies.FirstOrDefaultAsync(e => e.Id == id);
+
+        return result?.ToDto();
     }
 }

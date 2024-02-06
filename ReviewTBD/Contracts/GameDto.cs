@@ -7,6 +7,6 @@ public class GameDto
     public string Description { get; set; }
     public string CoverImageUrl { get; set; }
     public DateOnly DateCreated { get; set; }
-    public Guid GameStudioId { get; set; }
+    public Guid GameCreatorId { get; set; }
     public StudioDto? GameCreator { get; set; }
 }

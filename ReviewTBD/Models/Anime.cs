@@ -23,4 +23,21 @@ public class Anime : IDated
         AnimeStudio = AnimeStudio?.ToDto(),
         DateCreated = DateCreated,
     };
+
+    public static Anime FromDto(AnimeDto dto) => new()
+    {
+        Title = dto.Title,
+        Description = dto.Description,
+        CoverImageUrl = dto.CoverImageUrl,
+        DateCreated = dto.DateCreated,
+        AnimeStudioId = dto.AnimeStudioId,
+    };
+
+    public void Update(AnimeDto update) {
+        Title = update.Title;
+        Description = update.Description;
+        CoverImageUrl = update.CoverImageUrl;
+        DateCreated = update.DateCreated;
+        AnimeStudioId = update.AnimeStudioId;
+    }
 }

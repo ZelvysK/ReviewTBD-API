@@ -23,4 +23,20 @@ public class Movie : IDated
         MovieStudioId = MovieStudioId,
         MovieStudio = MovieStudio?.ToDto(),
     };
+
+    public static Movie FromDto(MovieDto dto) => new()
+    {
+        Title = dto.Title,
+        Description = dto.Description,
+        CoverUrl = dto.CoverUrl,
+        DateCreated = dto.DateCreated,
+        MovieStudioId = dto.MovieStudioId,
+    };
+
+    public void Update(MovieDto update) {
+        Title = update.Title;
+        Description = update.Description;
+        CoverUrl = update.CoverUrl;
+        DateCreated = update.DateCreated;
+    }
 }
