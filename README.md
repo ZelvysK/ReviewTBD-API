@@ -1,1 +1,33 @@
 # ReviewTBD
+
+- [ ] `backend` Merge all entities (Anime, Game, Movie) into one `Media`
+	- [ ] Add enum `MediaType` - Anime, Game, Movie
+- [ ] `frontend` adjustments
+	- [ ] Merge all `add` and `update` components into one
+		- [ ] `update-media`
+		- [ ] `add-media`
+	- [ ] Instead of separate pages for Anime, Games and Movies, there should be one page `/media` with additional filter (Select) for `MediaType`
+	- [ ] Display proper error messages when validating form
+- [ ] `backend` Add authentication
+	- [ ] Follow the tutorial https://www.youtube.com/watch?v=mgeuh8k3I4g
+	- [ ] Add `User` entity, to hold info like (id, name, email, imageUrl)
+	- [ ] Add `login` and `register` endpoints
+- [ ] `frontend` Add authentication
+	- [ ] Add `hooks` and `context` for checking if user is logged in
+	- [ ] Unauthorized user (aka not logged in OR token expired) should be redirected to `login` page
+	- [ ] Add login page and functionality (username, password)
+	- [ ] Add register page and functionality (username, password, email)
+- [ ] `backend` User management
+	- [ ] Add endpoint for editing user information
+	- [ ] Add endpoint to change password
+		- [ ] EXTRA add password strength validation
+- [ ] `frontend` User management
+	- [ ] Add user edit page
+	- [ ] Add password change page
+		- [ ] EXTRA add password strength validation (zod might be key)
+- [ ] `backend and frontend` Add user roles (`admin`, `user`)
+	- [ ] admin should be able to manage all users and studios, media
+	- [ ] user should be able to view studios and media (shouldn't even be able to see user list)
+- [ ] `backend` add proper error handling
+	- [ ] thrown exceptions should result in appropriate http status codes and return meaningful messages to consumer (frontend)
+- [ ] `frontend` should consume these errors properly (display error messages)
