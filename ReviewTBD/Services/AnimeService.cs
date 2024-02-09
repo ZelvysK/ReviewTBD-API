@@ -45,7 +45,7 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
             Offset = filters.Offset,
             Result = result,
             Total = totalCount
-        }; ;
+        };
     }
 
     public async Task<AnimeDto?> GetAnimeWithStudioByIdAsync(Guid id) {
@@ -82,7 +82,7 @@ public class AnimeService(ReviewContext context, ILogger<AnimeService> logger) :
             Offset = filters.Offset,
             Result = result,
             Total = totalCount
-        }; ;
+        };
     }
 
     public async Task<Guid> CreateAnimeAsync(AnimeDto animeDto) {

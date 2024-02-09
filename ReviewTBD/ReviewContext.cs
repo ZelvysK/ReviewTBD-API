@@ -11,6 +11,7 @@ public class ReviewContext(DbContextOptions<ReviewContext> options) : DbContext(
     public DbSet<Game> Games { get; set; }
     public DbSet<Movie> Movies { get; set; }
     public DbSet<Studio> Studios { get; set; }
+    public DbSet<Media> Media { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

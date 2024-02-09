@@ -9,5 +9,6 @@ public static class StartupExtensions
         builder.Services.AddScoped<IGameService, GameService>();
         builder.Services.AddScoped<IMovieService, MovieService>();
         builder.Services.AddScoped<IStudioService, StudioService>();
+        builder.Services.AddScoped<IMediaService, MediaService>();
     }
 }
