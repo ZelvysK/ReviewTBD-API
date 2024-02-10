@@ -10,11 +10,11 @@ namespace ReviewTBDAPI.Services;
 public interface IMediaService
 {
     Task<PaginatedResult<MediaDto>> GetAllMediaAsync(EntryQuery filters);
-    Task<PaginatedResult<MediaDto>> GetMediaByStudioAsync(EntryQuery filters, Guid studioId);
     Task<MediaDto?> GetMediaWithStudioByIdAsync(Guid id);
+    Task<PaginatedResult<MediaDto>> GetMediaByStudioAsync(EntryQuery filters, Guid studioId);
     Task<Guid> CreateMediaAsync(MediaDto mediaDto);
+    Task<MediaDto?> UpdateMediaAsync(Guid id, MediaDto input);
     Task<bool> DeleteMediaAsync(Guid id);
-    Task<ActionResult<MediaDto?>> UpdateMediaAsync(Guid id, MediaDto input);
 }
 
 public class MediaService(ReviewContext context, ILogger<MediaService> logger) : IMediaService
@@ -71,7 +71,7 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         var query = context.Media.AsNoTracking();
 
         var entries = await query
-            .Where(s=>s.StudioId == studioId)
+            .Where(s => s.StudioId == studioId)
             .FilterByDateCreated(filters.From, filters.To)
             .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
@@ -99,7 +99,7 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         return media.Id;
     }
 
-    public async Task<ActionResult<MediaDto?>> UpdateMediaAsync(Guid id, MediaDto input) {
+    public async Task<MediaDto?> UpdateMediaAsync(Guid id, MediaDto input) {
         var existingMedia = await context.Media.FirstOrDefaultAsync(e => e.Id == id);
 
         if (existingMedia is null)

@@ -99,7 +99,7 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
 
         await context.SaveChangesAsync();
 
-        var result = await context.Studios.FirstOrDefaultAsync(e=> e.Id == id);
+        var result = await context.Studios.FirstOrDefaultAsync(e => e.Id == id);
 
         return result?.ToDto();
     }
