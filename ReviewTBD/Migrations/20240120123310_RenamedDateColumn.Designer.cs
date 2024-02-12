@@ -9,178 +9,177 @@ using ReviewTBDAPI;
 
 #nullable disable
 
-namespace ReviewTBDAPI.Migrations
+namespace ReviewTBDAPI.Migrations;
+
+[DbContext(typeof(ReviewContext))]
+[Migration("20240120123310_RenamedDateColumn")]
+partial class RenamedDateColumn
 {
-    [DbContext(typeof(ReviewContext))]
-    [Migration("20240120123310_RenamedDateColumn")]
-    partial class RenamedDateColumn
+    /// <inheritdoc />
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "8.0.1")
+            .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ReviewTBDAPI.Models.Anime", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+        modelBuilder.Entity("ReviewTBDAPI.Models.Anime", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AnimeStudioId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<Guid>("AnimeStudioId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CoverImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("CoverImageUrl")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("CreatedDate")
-                        .HasColumnType("date");
+                b.Property<DateOnly>("CreatedDate")
+                    .HasColumnType("date");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("AnimeStudioId");
+                b.HasIndex("AnimeStudioId");
 
-                    b.ToTable("Animes");
-                });
+                b.ToTable("Animes");
+            });
 
-            modelBuilder.Entity("ReviewTBDAPI.Models.Game", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+        modelBuilder.Entity("ReviewTBDAPI.Models.Game", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CoverImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("CoverImageUrl")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("CreatedDate")
-                        .HasColumnType("date");
+                b.Property<DateOnly>("CreatedDate")
+                    .HasColumnType("date");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("GameCreatorId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<Guid>("GameCreatorId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("GameCreatorId");
+                b.HasIndex("GameCreatorId");
 
-                    b.ToTable("Games");
-                });
+                b.ToTable("Games");
+            });
 
-            modelBuilder.Entity("ReviewTBDAPI.Models.Movie", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+        modelBuilder.Entity("ReviewTBDAPI.Models.Movie", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CoverUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("CoverUrl")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("CreatedDate")
-                        .HasColumnType("date");
+                b.Property<DateOnly>("CreatedDate")
+                    .HasColumnType("date");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("MovieStudioId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<Guid>("MovieStudioId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("MovieStudioId");
+                b.HasIndex("MovieStudioId");
 
-                    b.ToTable("Movies");
-                });
+                b.ToTable("Movies");
+            });
 
-            modelBuilder.Entity("ReviewTBDAPI.Models.Studio", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+        modelBuilder.Entity("ReviewTBDAPI.Models.Studio", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("CreatedDate")
-                        .HasColumnType("date");
+                b.Property<DateOnly>("CreatedDate")
+                    .HasColumnType("date");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ImageUrl")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Type")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Studios");
-                });
+                b.ToTable("Studios");
+            });
 
-            modelBuilder.Entity("ReviewTBDAPI.Models.Anime", b =>
-                {
-                    b.HasOne("ReviewTBDAPI.Models.Studio", "AnimeStudio")
-                        .WithMany()
-                        .HasForeignKey("AnimeStudioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+        modelBuilder.Entity("ReviewTBDAPI.Models.Anime", b =>
+            {
+                b.HasOne("ReviewTBDAPI.Models.Studio", "AnimeStudio")
+                    .WithMany()
+                    .HasForeignKey("AnimeStudioId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("AnimeStudio");
-                });
+                b.Navigation("AnimeStudio");
+            });
 
-            modelBuilder.Entity("ReviewTBDAPI.Models.Game", b =>
-                {
-                    b.HasOne("ReviewTBDAPI.Models.Studio", "GameCreator")
-                        .WithMany()
-                        .HasForeignKey("GameCreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+        modelBuilder.Entity("ReviewTBDAPI.Models.Game", b =>
+            {
+                b.HasOne("ReviewTBDAPI.Models.Studio", "GameCreator")
+                    .WithMany()
+                    .HasForeignKey("GameCreatorId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("GameCreator");
-                });
+                b.Navigation("GameCreator");
+            });
 
-            modelBuilder.Entity("ReviewTBDAPI.Models.Movie", b =>
-                {
-                    b.HasOne("ReviewTBDAPI.Models.Studio", "MovieStudio")
-                        .WithMany()
-                        .HasForeignKey("MovieStudioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+        modelBuilder.Entity("ReviewTBDAPI.Models.Movie", b =>
+            {
+                b.HasOne("ReviewTBDAPI.Models.Studio", "MovieStudio")
+                    .WithMany()
+                    .HasForeignKey("MovieStudioId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("MovieStudio");
-                });
+                b.Navigation("MovieStudio");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

@@ -7,16 +7,18 @@ namespace ReviewTBDAPI;
 
 public class ReviewContext(DbContextOptions<ReviewContext> options) : DbContext(options)
 {
-    public DbSet<Anime> Animes { get; set; }
-    public DbSet<Game> Games { get; set; }
-    public DbSet<Movie> Movies { get; set; }
     public DbSet<Studio> Studios { get; set; }
+    public DbSet<Media> Media { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Studio>(entity =>
         {
             entity.Property(e => e.Type).HasConversion(new EnumToStringConverter<StudioType>());
+        });
+        modelBuilder.Entity<Media>(entity =>
+        {
+            entity.Property(e => e.MediaType).HasConversion(new EnumToStringConverter<MediaType>());
         });
     }
 }
