@@ -1,7 +1,7 @@
 # ReviewTBD
 
-- [ ] `backend` Merge all entities (Anime, Game, Movie) into one `Media`
-	- [ ] Add enum `MediaType` - Anime, Game, Movie
+- [x] `backend` Merge all entities (Anime, Game, Movie) into one `Media`
+	- [x] Add enum `MediaType` - Anime, Game, Movie
 - [ ] `frontend` adjustments
 	- [ ] Merge all `add` and `update` components into one
 		- [ ] `update-media`
