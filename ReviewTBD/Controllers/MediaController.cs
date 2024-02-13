@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Services;
 
 namespace ReviewTBDAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
-public class MediaController(IMediaService mediaService) : ControllerBase {
+public class MediaController(IMediaService mediaService) : ControllerBase
+{
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<MediaDto>>> GetAllMedia([FromQuery] EntryQuery filters) {
         var entries = await mediaService.GetAllMediaAsync(filters);
@@ -29,16 +32,16 @@ public class MediaController(IMediaService mediaService) : ControllerBase {
 
     [HttpGet("Studio/{studioId}")]
     public async Task<ActionResult<IEnumerable<MediaDto>>> GetMediaByStudio([FromQuery] EntryQuery filters, Guid studioId) {
-        var entries = await mediaService.GetMediaByStudioAsync(filters,studioId);
+        var entries = await mediaService.GetMediaByStudioAsync(filters, studioId);
 
         return Ok(entries);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateMedia([FromBody]MediaDto input) {
+    public async Task<IActionResult> CreateMedia([FromBody] MediaDto input) {
         var id = await mediaService.CreateMediaAsync(input);
 
-        return CreatedAtAction(nameof(GetMediaById), new {id}, new {Message = "Media created successfully", Id = id});
+        return CreatedAtAction(nameof(GetMediaById), new { id }, new { Message = "Media created successfully", Id = id });
     }
 
     [HttpDelete("{id:guid}")]

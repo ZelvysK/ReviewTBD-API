@@ -10,6 +10,8 @@ public class ReviewContext(DbContextOptions<ReviewContext> options) : DbContext(
     public DbSet<Studio> Studios { get; set; }
     public DbSet<Media> Media { get; set; }
 
+    public DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Studio>(entity =>
@@ -19,6 +21,10 @@ public class ReviewContext(DbContextOptions<ReviewContext> options) : DbContext(
         modelBuilder.Entity<Media>(entity =>
         {
             entity.Property(e => e.MediaType).HasConversion(new EnumToStringConverter<MediaType>());
+        });
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasIndex(e => e.Email).IsUnique();
         });
     }
 }
