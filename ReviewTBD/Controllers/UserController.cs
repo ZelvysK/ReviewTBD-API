@@ -10,7 +10,7 @@ namespace ReviewTBDAPI.Controllers;
 public class UserController(IUserService userService, JwtService jwtService) : ControllerBase
 {
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<UserDto[]>> GetUserById(Guid id) {
+    public async Task<ActionResult<UserDto>> GetUserById(string id) {
         var entry = await userService.GetUserByIdAsync(id);
 
         if (entry is null)
@@ -21,11 +21,32 @@ public class UserController(IUserService userService, JwtService jwtService) : C
         return Ok(entry);
     }
 
+    [HttpGet]
+    public async Task<ActionResult<UserDto>> GetUserByIdFromCookies() {
+        try
+        {
+            var jwt = Request.Cookies["jwt"];
+
+            var token = jwtService.Verify(jwt);
+
+            var userId = token.Issuer;
+
+            var user = await userService.GetUserByIdAsync(userId);
+
+            return Ok(user);
+
+        }
+        catch (Exception _)
+        {
+            return Unauthorized();
+        }
+    }
+
     [HttpPost("Register")]
     public async Task<IActionResult> RegisterUser([FromBody] UserDto input) {
         var id = await userService.CreateUserAsync(input);
 
-        return CreatedAtAction(nameof(GetUserById), new { id }, new {Message = "User registered successfully", Id = id});
+        return CreatedAtAction(nameof(GetUserById), new { id }, new { Message = "User registered successfully", Id = id });
     }
 
     [HttpPost("Login")]
@@ -45,6 +66,16 @@ public class UserController(IUserService userService, JwtService jwtService) : C
             HttpOnly = true,
         });
 
-        return Ok("Success");
+        return Ok(token);
+    }
+
+    [HttpPost("Logout")]
+    public async Task<IActionResult> Logout() {
+        Response.Cookies.Delete("jwt");
+
+        return Ok(new
+        {
+            Message = "Success"
+        });
     }
 }

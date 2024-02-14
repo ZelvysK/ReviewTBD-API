@@ -1,4 +1,5 @@
 ﻿using ReviewTBDAPI.Contracts;
+using System.Text.Json.Serialization;
 
 namespace ReviewTBDAPI.Models;
 

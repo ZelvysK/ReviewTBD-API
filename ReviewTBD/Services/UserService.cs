@@ -8,7 +8,7 @@ public interface IUserService
 {
     Task<Guid> CreateUserAsync(UserDto userDto);
     Task<UserDto?> GetUserByEmailAsync(string email);
-    Task<UserDto?> GetUserByIdAsync(Guid id);
+    Task<UserDto?> GetUserByIdAsync(string id);
 }
 
 public class UserService(ReviewContext context, ILogger<UserService> logger) : IUserService
@@ -23,12 +23,12 @@ public class UserService(ReviewContext context, ILogger<UserService> logger) : I
         return user.Id;
     }
 
-    public async Task<UserDto?> GetUserByIdAsync(Guid id) {
+    public async Task<UserDto?> GetUserByIdAsync(string id) {
         logger.LogInformation("Get user by id: {id}", id);
 
         var entry = await context.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id.ToString() == id);
 
         var result = entry?.ToDto();
         
@@ -46,5 +46,7 @@ public class UserService(ReviewContext context, ILogger<UserService> logger) : I
 
         return result;
     }
+
+
 
 }
