@@ -1,5 +1,4 @@
 ﻿using ReviewTBDAPI.Enums;
-using ReviewTBDAPI.Models;
 
 namespace ReviewTBDAPI.Contracts;
 

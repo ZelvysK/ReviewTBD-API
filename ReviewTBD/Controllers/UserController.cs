@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using ReviewTBDAPI.Configuration;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Services;
 using ReviewTBDAPI.Utilities;
