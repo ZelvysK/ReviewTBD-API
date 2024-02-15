@@ -60,7 +60,7 @@ namespace ReviewTBDAPI.Migrations
 
                     b.HasIndex("StudioId");
 
-                    b.ToTable("Media");
+                    b.ToTable("Media", (string)null);
                 });
 
             modelBuilder.Entity("ReviewTBDAPI.Models.Studio", b =>
@@ -90,7 +90,7 @@ namespace ReviewTBDAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Studios");
+                    b.ToTable("Studios", (string)null);
                 });
 
             modelBuilder.Entity("ReviewTBDAPI.Models.User", b =>
@@ -116,7 +116,7 @@ namespace ReviewTBDAPI.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ReviewTBDAPI.Models.Media", b =>

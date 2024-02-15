@@ -13,12 +13,13 @@ public interface IStudioService
     Task<bool> DeleteStudioAsync(Guid id);
     Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters);
     Task<StudioDto?> GetStudioByIdAsync(Guid id);
-    Task<ActionResult<StudioDto?>> UpdateStudioAsync(Guid id, StudioDto input);
+    Task<StudioDto?> UpdateStudioAsync(Guid id, StudioDto input);
 }
 
 public class StudioService(ReviewContext context, ILogger<StudioService> logger) : IStudioService
 {
-    public async Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters) {
+    public async Task<PaginatedResult<StudioDto>> GetAllStudiosAsync(StudioQuery filters)
+    {
         logger.LogInformation("Get all studios, filters: {Filters}", filters);
 
         var query = context.Studios.AsNoTracking();
@@ -51,7 +52,8 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         };
     }
 
-    public async Task<StudioDto?> GetStudioByIdAsync(Guid id) {
+    public async Task<StudioDto?> GetStudioByIdAsync(Guid id)
+    {
         logger.LogInformation("Get studio by id: {id}", id);
 
         var entry = await context.Studios
@@ -63,8 +65,8 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         return result;
     }
 
-    public async Task<Guid> CreateStudioAsync(StudioDto studioDto) {
-
+    public async Task<Guid> CreateStudioAsync(StudioDto studioDto)
+    {
         var studio = Studio.FromDto(studioDto);
 
         context.Studios.Add(studio);
@@ -74,7 +76,8 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         return studio.Id;
     }
 
-    public async Task<bool> DeleteStudioAsync(Guid id) {
+    public async Task<bool> DeleteStudioAsync(Guid id)
+    {
         var studio = await context.Studios.FirstOrDefaultAsync(e => e.Id == id);
 
         if (studio is null)
@@ -87,7 +90,8 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<ActionResult<StudioDto?>> UpdateStudioAsync(Guid id, StudioDto input) {
+    public async Task<StudioDto?> UpdateStudioAsync(Guid id, StudioDto input)
+    {
         var existingStudio = await context.Studios.FirstOrDefaultAsync(e => e.Id == id);
 
         if (existingStudio is null)
