@@ -1,17 +1,15 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using ReviewTBDAPI.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace ReviewTBDAPI.Utilities;
 
-public class JwtService
+public class JwtService(IOptions<AuthConfiguration> authConfiguration)
 {
-    //TEMP DATA!!!
-    //Will need to change where stored
-    private string secureKey = "SaveSomewhereSecurePleaseThisIsNotSafe";
-
     public string Generate(Guid id) {
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secureKey));
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfiguration.Value.SecureKey));
         var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
 
         var header = new JwtHeader(credentials);
@@ -23,7 +21,7 @@ public class JwtService
 
     public JwtSecurityToken Verify(string jwt) {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(secureKey);
+        var key = Encoding.ASCII.GetBytes(authConfiguration.Value.SecureKey);
 
         tokenHandler.ValidateToken(jwt, new TokenValidationParameters
         {

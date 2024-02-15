@@ -13,7 +13,8 @@ public interface IUserService
 
 public class UserService(ReviewContext context, ILogger<UserService> logger) : IUserService
 {
-    public async Task<Guid> CreateUserAsync(UserDto userDto) {
+    public async Task<Guid> CreateUserAsync(UserDto userDto)
+    {
         var user = User.FromDto(userDto);
 
         context.Users.Add(user);
@@ -23,7 +24,8 @@ public class UserService(ReviewContext context, ILogger<UserService> logger) : I
         return user.Id;
     }
 
-    public async Task<UserDto?> GetUserByIdAsync(string id) {
+    public async Task<UserDto?> GetUserByIdAsync(string id)
+    {
         logger.LogInformation("Get user by id: {id}", id);
 
         var entry = await context.Users
@@ -31,11 +33,12 @@ public class UserService(ReviewContext context, ILogger<UserService> logger) : I
             .FirstOrDefaultAsync(u => u.Id.ToString() == id);
 
         var result = entry?.ToDto();
-        
+
         return result;
     }
-    
-    public async Task<UserDto?> GetUserByEmailAsync(string email) {
+
+    public async Task<UserDto?> GetUserByEmailAsync(string email)
+    {
         logger.LogInformation("Get user by email: {email}", email);
 
         var entry = await context.Users
@@ -46,7 +49,4 @@ public class UserService(ReviewContext context, ILogger<UserService> logger) : I
 
         return result;
     }
-
-
-
 }

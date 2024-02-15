@@ -9,13 +9,19 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using ReviewTBDAPI.Swagger;
+using ReviewTBDAPI.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ReviewContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Configuration.AddJsonFile("secrets.json", optional: false);
+
+builder.Services.Configure<AuthConfiguration>(builder.Configuration.GetSection("auth"));
 builder.RegisterServices();
+
+var authConfiguration = builder.Configuration.GetSection("auth").Get<AuthConfiguration>();
 
 builder.Services.AddAuthentication(x =>
 {
@@ -26,8 +32,8 @@ builder.Services.AddAuthentication(x =>
 {
     o.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!)),
+        ValidIssuer = authConfiguration!.Issuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfiguration!.SecureKey)),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
@@ -55,7 +61,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(o => o
-    .WithOrigins(["http://localhost:3000"] )
+    .WithOrigins(["http://localhost:3000"])
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials());
