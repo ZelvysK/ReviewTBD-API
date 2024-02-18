@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Startup;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using ReviewTBDAPI;
 using SwaggerThemes;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,18 @@ builder.Services.AddDbContext<ReviewContext>(options =>
 builder.Configuration.AddJsonFile("secrets.json", optional: false);
 
 builder.RegisterServices();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddCookie(options =>
+{
+    options.Cookie.Name = "ReviewTBD.Cookie";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+    options.SlidingExpiration = true;
+});
 
 builder.Services.AddAuthorization();
 
