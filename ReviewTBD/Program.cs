@@ -3,13 +3,10 @@ using ReviewTBDAPI.Startup;
 using System.Text.Json.Serialization;
 using ReviewTBDAPI;
 using SwaggerThemes;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using ReviewTBDAPI.Swagger;
-using ReviewTBDAPI.Configuration;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,38 +15,28 @@ builder.Services.AddDbContext<ReviewContext>(options =>
 
 builder.Configuration.AddJsonFile("secrets.json", optional: false);
 
-builder.Services.Configure<AuthConfiguration>(builder.Configuration.GetSection("auth"));
 builder.RegisterServices();
 
-var authConfiguration = builder.Configuration.GetSection("auth").Get<AuthConfiguration>();
-
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o =>
-{
-    o.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidIssuer = authConfiguration!.Issuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfiguration!.SecureKey)),
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-    };
-});
-
 builder.Services.AddAuthorization();
+
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<ReviewContext>();
 
 builder.Services
     .AddControllers()
     .AddJsonOptions(o => { o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+        });
+        options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 var app = builder.Build();
 
@@ -66,9 +53,9 @@ app.UseCors(o => o
     .AllowAnyMethod()
     .AllowCredentials());
 
-app.UseHttpsRedirection();
+app.MapIdentityApi<IdentityUser>();
 
-app.UseAuthentication();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
