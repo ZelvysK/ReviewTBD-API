@@ -20,7 +20,7 @@ public class Studio : IDated
         Description = Description,
         ImageUrl = ImageUrl,
         DateCreated = DateCreated,
-        Type = Type,
+        Type = Type
     };
 
     public static Studio FromDto(StudioDto dto) => new()
@@ -29,7 +29,7 @@ public class Studio : IDated
         Description = dto.Description,
         ImageUrl = dto.ImageUrl,
         DateCreated = dto.DateCreated,
-        Type = dto.Type,
+        Type = dto.Type
     };
 
     public void Update(StudioDto update) {

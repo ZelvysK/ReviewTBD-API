@@ -4,5 +4,5 @@ public enum StudioType
 {
     Anime,
     Game,
-    Movie,
+    Movie
 }

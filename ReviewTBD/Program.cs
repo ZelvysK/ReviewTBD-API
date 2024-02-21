@@ -43,12 +43,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey,
-        });
-        options.OperationFilter<SecurityRequirementsOperationFilter>();
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
 var app = builder.Build();
@@ -61,7 +61,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(o => o
-    .WithOrigins(["http://localhost:3000"])
+    .WithOrigins(["http://localhost:5173"])
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials());
