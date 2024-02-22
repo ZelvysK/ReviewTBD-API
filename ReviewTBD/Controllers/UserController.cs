@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Services;
@@ -25,5 +26,21 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
     public async Task Logout()
     {
         await signInManager.SignOutAsync();
+    }
+
+    [HttpPost("Register")]
+    public async Task<ActionResult<IdentityUser>> Register(RegisterDto input)
+    {
+        var user = await userService.RegisterUserAsync(input);
+
+        return Ok(user);
+    }
+
+    [HttpPost("Login")]
+    public async Task<ActionResult<IdentityUser>> Login(LoginDto input)
+    {
+        var user = await userService.LoginUserAsync(input);
+
+        return Ok(user);
     }
 }
