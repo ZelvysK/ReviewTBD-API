@@ -9,9 +9,14 @@ public interface IUserService
     Task<IdentityUser?> GetUserByIdAsync(string id);
     Task<IdentityResult> RegisterUserAsync(RegisterDto input);
     Task<SignInResult> LoginUserAsync(LoginDto input);
+    Task<IdentityUser?> GetUserByEmailAsync(string email);
 }
 
-public class UserService(ReviewContext context, UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager, ILogger<UserService> logger) : IUserService
+public class UserService(
+    ReviewContext context,
+    UserManager<IdentityUser> userManager,
+    SignInManager<IdentityUser> signInManager,
+    ILogger<UserService> logger) : IUserService
 {
     public async Task<IdentityUser?> GetUserByIdAsync(string id)
     {
@@ -19,14 +24,14 @@ public class UserService(ReviewContext context, UserManager<IdentityUser> userMa
 
         var entry = await context.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id.ToString() == id);
-        
+            .FirstOrDefaultAsync(u => u.Id == id);
+
         return entry;
     }
 
     public async Task<IdentityResult> RegisterUserAsync(RegisterDto input)
     {
-        logger.LogInformation("Register user with input: {input}", input);
+        logger.LogInformation("Register user with provided input");
 
         var username = input.Username.ToLower();
 
@@ -41,10 +46,18 @@ public class UserService(ReviewContext context, UserManager<IdentityUser> userMa
     {
         var normalizedUsername = input.Username.ToUpper();
 
-        var result = await signInManager.PasswordSignInAsync(normalizedUsername, input.Password, isPersistent: false,
-            lockoutOnFailure: false);
+        var result = await signInManager.PasswordSignInAsync(normalizedUsername, input.Password, false,
+            false);
 
         return result;
     }
 
+    public async Task<IdentityUser?> GetUserByEmailAsync(string email)
+    {
+        var entry = await context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == email);
+
+        return entry;
+    }
 }

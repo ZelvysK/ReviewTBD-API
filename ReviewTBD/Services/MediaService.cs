@@ -18,20 +18,16 @@ public interface IMediaService
 
 public class MediaService(ReviewContext context, ILogger<MediaService> logger) : IMediaService
 {
-    public async Task<PaginatedResult<MediaDto>> GetAllMediaAsync(EntryQuery filters) {
+    public async Task<PaginatedResult<MediaDto>> GetAllMediaAsync(EntryQuery filters)
+    {
         logger.LogInformation("Get all Media, filters: {Filters}", filters);
 
         var query = context.Media.AsNoTracking();
 
-        if (filters.MediaType is not null)
-        {
-            query = query.Where(t => t.MediaType == filters.MediaType);
-        }
+        if (filters.MediaType is not null) query = query.Where(t => t.MediaType == filters.MediaType);
 
         if (!string.IsNullOrWhiteSpace(filters.Term))
-        {
             query = query.Where(m => m.Name.Contains(filters.Term) || m.Description.Contains(filters.Term));
-        }
 
         var entries = await query
             .FilterByDateCreated(filters.From, filters.To)
@@ -51,7 +47,8 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         };
     }
 
-    public async Task<MediaDto?> GetMediaWithStudioByIdAsync(Guid id) {
+    public async Task<MediaDto?> GetMediaWithStudioByIdAsync(Guid id)
+    {
         logger.LogInformation("Get media by id: {id}", id);
 
         var entry = await context.Media
@@ -64,7 +61,8 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         return result;
     }
 
-    public async Task<PaginatedResult<MediaDto>> GetMediaByStudioAsync(EntryQuery filters, Guid studioId) {
+    public async Task<PaginatedResult<MediaDto>> GetMediaByStudioAsync(EntryQuery filters, Guid studioId)
+    {
         logger.LogInformation("Get Media by studio: {animeStudioId}, with filters: {Filters}", studioId, filters);
 
         var query = context.Media.AsNoTracking();
@@ -88,7 +86,8 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         };
     }
 
-    public async Task<Guid> CreateMediaAsync(MediaDto mediaDto) {
+    public async Task<Guid> CreateMediaAsync(MediaDto mediaDto)
+    {
         var media = Media.FromDto(mediaDto);
 
         context.Media.Add(media);
@@ -98,13 +97,11 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         return media.Id;
     }
 
-    public async Task<MediaDto?> UpdateMediaAsync(Guid id, MediaDto input) {
+    public async Task<MediaDto?> UpdateMediaAsync(Guid id, MediaDto input)
+    {
         var existingMedia = await context.Media.FirstOrDefaultAsync(e => e.Id == id);
 
-        if (existingMedia is null)
-        {
-            return null;
-        }
+        if (existingMedia is null) return null;
 
         existingMedia.Update(input);
 
@@ -115,13 +112,11 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         return result?.ToDto();
     }
 
-    public async Task<bool> DeleteMediaAsync(Guid id) {
+    public async Task<bool> DeleteMediaAsync(Guid id)
+    {
         var media = await context.Media.FirstOrDefaultAsync(e => e.Id == id);
 
-        if (media is null)
-        {
-            return false;
-        }
+        if (media is null) return false;
 
         context.Media.Remove(media);
 

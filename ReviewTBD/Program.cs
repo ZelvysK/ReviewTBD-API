@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ReviewContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Configuration.AddJsonFile("secrets.json", optional: false);
+builder.Configuration.AddJsonFile("secrets.json", false);
 
 builder.RegisterServices();
 

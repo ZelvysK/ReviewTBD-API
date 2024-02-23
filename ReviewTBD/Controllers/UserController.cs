@@ -11,13 +11,11 @@ namespace ReviewTBDAPI.Controllers;
 public class UserController(IUserService userService, SignInManager<IdentityUser> signInManager) : ControllerBase
 {
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<IdentityUser>> GetUserById(string id) {
+    public async Task<ActionResult<IdentityUser>> GetUserById(string id)
+    {
         var entry = await userService.GetUserByIdAsync(id);
 
-        if (entry is null)
-        {
-            return NotFound();
-        }
+        if (entry is null) return NotFound();
 
         return Ok(entry);
     }
@@ -31,9 +29,15 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
     [HttpPost("Register")]
     public async Task<ActionResult<IdentityUser>> Register(RegisterDto input)
     {
-        var user = await userService.RegisterUserAsync(input);
+        var result = await userService.RegisterUserAsync(input);
 
-        return Ok(user);
+        if (result.Succeeded)
+        {
+            var user = await userService.GetUserByEmailAsync(input.Email);
+            return Ok(user);
+        }
+        
+        return BadRequest(result.Errors);
     }
 
     [HttpPost("Login")]
