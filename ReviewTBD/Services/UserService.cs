@@ -9,6 +9,7 @@ public interface IUserService
     Task<IdentityUser?> GetUserByIdAsync(string id);
     Task<IdentityResult> RegisterUserAsync(RegisterDto input);
     Task<SignInResult> LoginUserAsync(LoginDto input);
+    Task<IdentityUser?> GetUserByUsernameAsync(string username);
     Task<IdentityUser?> GetUserByEmailAsync(string email);
 }
 
@@ -46,12 +47,29 @@ public class UserService(
     {
         var normalizedUsername = input.Username.ToUpper();
 
-        var result = await signInManager.PasswordSignInAsync(normalizedUsername, input.Password, false,
+        if (normalizedUsername.Contains('@'))
+        {
+            var user = await GetUserByEmailAsync(normalizedUsername);
+            var emailResult = await signInManager.PasswordSignInAsync(user.NormalizedUserName, input.Password, false,
+                false);
+            
+            return emailResult;
+        }
+        var usernameResult = await signInManager.PasswordSignInAsync(normalizedUsername, input.Password, false,
             false);
-
-        return result;
+        
+        return usernameResult;
     }
 
+    public async Task<IdentityUser?> GetUserByUsernameAsync(string username)
+    {
+        var entry = await context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.UserName == username);
+
+        return entry;
+    }
+    
     public async Task<IdentityUser?> GetUserByEmailAsync(string email)
     {
         var entry = await context.Users

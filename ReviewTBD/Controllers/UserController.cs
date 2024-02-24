@@ -27,13 +27,16 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
     }
 
     [HttpPost("Register")]
-    public async Task<ActionResult<IdentityUser>> Register(RegisterDto input)
+    public async Task<ActionResult> Register(RegisterDto input)
     {
         var result = await userService.RegisterUserAsync(input);
 
         if (result.Succeeded)
         {
-            var user = await userService.GetUserByEmailAsync(input.Email);
+            var user = await userService.GetUserByUsernameAsync(input.Username);
+            
+            await signInManager.SignInAsync(user!, false, "Bearer");
+            
             return Ok(user);
         }
         
@@ -43,8 +46,25 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
     [HttpPost("Login")]
     public async Task<ActionResult<IdentityUser>> Login(LoginDto input)
     {
-        var user = await userService.LoginUserAsync(input);
+        var result = await userService.LoginUserAsync(input);
+        
+        if (result.Succeeded)
+        {
+            if (input.Username.Contains('@'))
+            {
+                var userByEmail = await userService.GetUserByEmailAsync(input.Username);
+                await signInManager.SignInAsync(userByEmail!, false, "Bearer");
 
-        return Ok(user);
+                return Ok(userByEmail);
+            }
+            
+            var userByName = await userService.GetUserByUsernameAsync(input.Username);
+            
+            await signInManager.SignInAsync(userByName!, false, "Bearer");
+            
+            return Ok(userByName);
+        }
+
+        return BadRequest(result.ToString());
     }
 }
