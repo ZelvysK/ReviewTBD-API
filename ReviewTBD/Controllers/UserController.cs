@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ReviewTBDAPI.Contracts;
+using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Services;
 
 namespace ReviewTBDAPI.Controllers;
@@ -66,5 +68,14 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
         }
 
         return BadRequest(result.ToString());
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<PaginatedResult<IdentityUser>>> GetAllUsers([FromQuery] UserQuery  filters)
+    {
+        var result = await userService.GetAllUsersAsync(filters);
+
+        return Ok(result);
     }
 }
