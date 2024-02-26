@@ -14,6 +14,7 @@ public interface IUserService
     Task<IdentityUser?> GetUserByUsernameAsync(string username);
     Task<IdentityUser?> GetUserByEmailAsync(string email);
     Task<PaginatedResult<UserDto>> GetAllUsersAsync(UserQuery filters);
+    Task<IdentityUser?> UpdateUserAsync(string username);
 }
 
 public class UserService(
@@ -109,5 +110,19 @@ public class UserService(
             Result = entries,
             Total = totalCount
         };
+    }
+
+    public async Task<IdentityUser?> UpdateUserAsync(string username)
+    {
+        var user = await GetUserByUsernameAsync(username);
+        
+        var updated = userManager.UpdateAsync(user);
+
+        if (!updated.Result.Succeeded)
+        {
+            return null;
+        }
+
+        return user;
     }
 }

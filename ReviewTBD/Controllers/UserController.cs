@@ -78,4 +78,14 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
 
         return Ok(result);
     }
+
+    [HttpPut]
+    public async Task<ActionResult<IdentityUser>> UpdateUser(string username)
+    {
+        var updated = await userService.UpdateUserAsync(username);
+
+        return updated is not null
+            ? Ok(updated)
+            : NotFound();
+    }
 }
