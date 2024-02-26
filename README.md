@@ -2,19 +2,19 @@
 
 - [x] `backend` Merge all entities (Anime, Game, Movie) into one `Media`
 	- [x] Add enum `MediaType` - Anime, Game, Movie
-- [ ] `frontend` adjustments
-	- [ ] Merge all `add` and `update` components into one
-		- [ ] `update-media`
-		- [ ] `add-media`
-	- [ ] Instead of separate pages for Anime, Games and Movies, there should be one page `/media` with additional filter (Select) for `MediaType`
+- [x] `frontend` adjustments
+	- [x] Merge all `add` and `update` components into one
+		- [x] `update-media`
+		- [x] `add-media`
+	- [x] Instead of separate pages for Anime, Games and Movies, there should be one page `/media` with additional filter (Select) for `MediaType`
 	- [ ] Display proper error messages when validating form
-- [ ] `backend` Add authentication
-	- [ ] Follow the tutorial https://www.youtube.com/watch?v=mgeuh8k3I4g
-	- [ ] Add `User` entity, to hold info like (id, name, email, imageUrl)
-	- [ ] Add `login` and `register` endpoints
+- [x] `backend` Add authentication
+	- [x] Follow the tutorial https://www.youtube.com/watch?v=mgeuh8k3I4g
+	- [x] Add `User` entity, to hold info like (id, name, email, imageUrl)
+	- [x] Add `login` and `register` endpoints
 - [ ] `frontend` Add authentication
-	- [ ] Add `hooks` and `context` for checking if user is logged in
-	- [ ] Unauthorized user (aka not logged in OR token expired) should be redirected to `login` page
+	- [x] Add `hooks` and `context` for checking if user is logged in
+	- [x] Unauthorized user (aka not logged in OR token expired) should be redirected to `login` page
 	- [ ] Add login page and functionality (username, password)
 	- [ ] Add register page and functionality (username, password, email)
 - [ ] `backend` User management
