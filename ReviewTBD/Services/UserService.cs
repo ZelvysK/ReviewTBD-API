@@ -14,7 +14,7 @@ public interface IUserService
     Task<IdentityUser?> GetUserByUsernameAsync(string username);
     Task<IdentityUser?> GetUserByEmailAsync(string email);
     Task<PaginatedResult<UserDto>> GetAllUsersAsync(UserQuery filters);
-    Task<IdentityUser?> UpdateUserAsync(string username);
+    Task<IdentityUser?> UpdateUserAsync(string id, EdidUserDto input);
 }
 
 public class UserService(
@@ -59,6 +59,7 @@ public class UserService(
             
             return emailResult;
         }
+        
         var usernameResult = await signInManager.PasswordSignInAsync(normalizedUsername, input.Password, false,
             false);
         
@@ -112,16 +113,27 @@ public class UserService(
         };
     }
 
-    public async Task<IdentityUser?> UpdateUserAsync(string username)
+    public async Task<IdentityUser?> UpdateUserAsync(string id, EdidUserDto input)
     {
-        var user = await GetUserByUsernameAsync(username);
-        
-        var updated = userManager.UpdateAsync(user);
+        var user = await userManager.FindByIdAsync(id);
 
-        if (!updated.Result.Succeeded)
+        if (input.Username is not null && user.UserName != input.Username)
         {
-            return null;
-        }
+            var updated = await userManager.SetUserNameAsync(user, input.Username);
+            if (!updated.Succeeded) return null;
+        } else logger.LogInformation("Username has not been changed");
+
+        if (input.Email is not null && user.Email != input.Email)
+        {
+            var updated = await userManager.ChangeEmailAsync(user, input.Email, null);
+            if (!updated.Succeeded) return null;
+        } else logger.LogInformation("Email has not been changed");
+
+        if (input.PhoneNumber is not null && user.PhoneNumber != input.PhoneNumber)
+        {
+            var updated = await userManager.ChangePhoneNumberAsync(user, input.PhoneNumber, null);
+            if (!updated.Succeeded) return null;
+        } else logger.LogInformation("Phone number has not been changed");
 
         return user;
     }

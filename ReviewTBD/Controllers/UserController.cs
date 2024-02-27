@@ -80,9 +80,9 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
     }
 
     [HttpPut]
-    public async Task<ActionResult<IdentityUser>> UpdateUser(string username)
+    public async Task<ActionResult<IdentityUser>> UpdateUser(string id, EdidUserDto input)
     {
-        var updated = await userService.UpdateUserAsync(username);
+        var updated = await userService.UpdateUserAsync(id, input);
 
         return updated is not null
             ? Ok(updated)
