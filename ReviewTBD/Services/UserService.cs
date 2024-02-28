@@ -56,13 +56,13 @@ public class UserService(
             var user = await GetUserByEmailAsync(normalizedUsername);
             var emailResult = await signInManager.PasswordSignInAsync(user.NormalizedUserName, input.Password, false,
                 false);
-            
+
             return emailResult;
         }
-        
+
         var usernameResult = await signInManager.PasswordSignInAsync(normalizedUsername, input.Password, false,
             false);
-        
+
         return usernameResult;
     }
 
@@ -74,7 +74,7 @@ public class UserService(
 
         return entry;
     }
-    
+
     public async Task<IdentityUser?> GetUserByEmailAsync(string email)
     {
         var entry = await context.Users
@@ -94,10 +94,10 @@ public class UserService(
             query = query.Where(u => u.UserName.Contains(filters.Term) || u.Email.Contains(filters.Term));
 
         var entries = await query
-            .Select(s=> new UserDto
+            .Select(s => new UserDto
             {
                 Username = s.UserName,
-                Email = s.Email,
+                Email = s.Email
             })
             .AddPagination(filters.Offset, filters.Limit)
             .ToArrayAsync();
@@ -121,19 +121,45 @@ public class UserService(
         {
             var updated = await userManager.SetUserNameAsync(user, input.Username);
             if (!updated.Succeeded) return null;
-        } else logger.LogInformation("Username has not been changed");
+        }
+        else
+        {
+            logger.LogInformation("Username has not been changed");
+        }
 
         if (input.Email is not null && user.Email != input.Email)
         {
-            var updated = await userManager.ChangeEmailAsync(user, input.Email, null);
+            //Should be gotten from Email
+            input.EmailToken = await userManager.GenerateChangeEmailTokenAsync(user, input.Email);
+            var updated = await userManager.ChangeEmailAsync(user, input.Email, input.EmailToken);
             if (!updated.Succeeded) return null;
-        } else logger.LogInformation("Email has not been changed");
+        }
+        else
+        {
+            logger.LogInformation("Email has not been changed");
+        }
+
+        if (input.NewPassword is not null)
+        {
+            var result = await userManager.ChangePasswordAsync(user, input.CurrentPassword, input.NewPassword);
+            if (!result.Succeeded) return null;
+        }
+        else
+        {
+            logger.LogInformation("Password has not been changed");
+        }
 
         if (input.PhoneNumber is not null && user.PhoneNumber != input.PhoneNumber)
         {
-            var updated = await userManager.ChangePhoneNumberAsync(user, input.PhoneNumber, null);
+            //Should be gotten from Phone Number
+            input.PhoneToken = await userManager.GenerateChangePhoneNumberTokenAsync(user, input.PhoneNumber);
+            var updated = await userManager.ChangePhoneNumberAsync(user, input.PhoneNumber, input.PhoneToken);
             if (!updated.Succeeded) return null;
-        } else logger.LogInformation("Phone number has not been changed");
+        }
+        else
+        {
+            logger.LogInformation("Phone number has not been changed");
+        }
 
         return user;
     }
