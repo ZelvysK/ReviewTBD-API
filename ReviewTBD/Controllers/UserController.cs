@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ReviewTBDAPI.Contracts;
@@ -36,12 +35,12 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
         if (result.Succeeded)
         {
             var user = await userService.GetUserByUsernameAsync(input.Username);
-            
+
             await signInManager.SignInAsync(user!, false, "Bearer");
-            
+
             return Ok(user);
         }
-        
+
         return BadRequest(result.Errors);
     }
 
@@ -49,7 +48,7 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
     public async Task<ActionResult<IdentityUser>> Login(LoginDto input)
     {
         var result = await userService.LoginUserAsync(input);
-        
+
         if (result.Succeeded)
         {
             if (input.Username.Contains('@'))
@@ -59,11 +58,11 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
 
                 return Ok(userByEmail);
             }
-            
+
             var userByName = await userService.GetUserByUsernameAsync(input.Username);
-            
+
             await signInManager.SignInAsync(userByName!, false, "Bearer");
-            
+
             return Ok(userByName);
         }
 
@@ -72,11 +71,51 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<IdentityUser>>> GetAllUsers([FromQuery] UserQuery  filters)
+    public async Task<ActionResult<PaginatedResult<IdentityUser>>> GetAllUsers([FromQuery] UserQuery filters)
     {
         var result = await userService.GetAllUsersAsync(filters);
 
         return Ok(result);
+    }
+
+    [HttpPost("ChangeEmail")]
+    public async Task<ActionResult> ChangeEmail(string id, UserEmailDto input)
+    {
+        var updated = await userService.ChangeEmailAsync(id, input);
+
+        return updated.Succeeded
+            ? Ok(updated)
+            : BadRequest(updated.Errors);
+    }
+
+    [HttpPost("ChangePhoneNumber")]
+    public async Task<ActionResult> ChangePhoneNumber(string id, UserPhoneDto input)
+    {
+        var updated = await userService.ChangePhoneNumberAsync(id, input);
+
+        return updated.Succeeded
+            ? Ok(updated)
+            : BadRequest(updated.Errors);
+    }
+
+    [HttpPost("ChangePassword")]
+    public async Task<ActionResult> ChangePassword(string id, UserPasswordDto input)
+    {
+        var updated = await userService.ChangePasswordAsync(id, input);
+
+        return updated.Succeeded
+            ? Ok(updated)
+            : BadRequest(updated.Errors);
+    }
+
+    [HttpPost("ResetPassword")]
+    public async Task<ActionResult> ResetPassword(string id, UserPasswordDto input)
+    {
+        var updated = await userService.ResetPasswordAsync(id, input);
+
+        return updated.Succeeded
+            ? Ok(updated)
+            : BadRequest(updated.Errors);
     }
 
     [HttpPut]

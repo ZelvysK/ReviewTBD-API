@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Utilities;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace ReviewTBDAPI.Services;
 
@@ -14,6 +15,10 @@ public interface IUserService
     Task<IdentityUser?> GetUserByUsernameAsync(string username);
     Task<IdentityUser?> GetUserByEmailAsync(string email);
     Task<PaginatedResult<UserDto>> GetAllUsersAsync(UserQuery filters);
+    Task<IdentityResult> ChangeEmailAsync(string id, UserEmailDto input);
+    Task<IdentityResult> ChangePhoneNumberAsync(string id, UserPhoneDto input);
+    Task<IdentityResult> ResetPasswordAsync(string id, UserPasswordDto input);
+    Task<IdentityResult> ChangePasswordAsync(string id, UserPasswordDto input);
     Task<IdentityUser?> UpdateUserAsync(string id, EdidUserDto input);
 }
 
@@ -27,9 +32,7 @@ public class UserService(
     {
         logger.LogInformation("Get user by id: {id}", id);
 
-        var entry = await context.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id);
+        var entry = await userManager.FindByIdAsync(id);
 
         return entry;
     }
@@ -111,6 +114,79 @@ public class UserService(
             Result = entries,
             Total = totalCount
         };
+    }
+
+    public async Task<IdentityResult> ChangeEmailAsync(string id, UserEmailDto input)
+    {
+        var user = await userManager.FindByIdAsync(id);
+
+        input.EmailToken = await userManager.GenerateChangeEmailTokenAsync(user, input.Email);
+        var updated = await userManager.ChangeEmailAsync(user, input.Email, input.EmailToken);
+        if (updated.Succeeded)
+            logger.LogInformation("Email changed successfully!");
+        else
+            logger.LogInformation("Failed to change email...");
+        return updated;
+
+        return updated;
+    }
+
+    public async Task<IdentityResult> ChangePhoneNumberAsync(string id, UserPhoneDto input)
+    {
+        var user = await userManager.FindByIdAsync(id);
+
+        var hasPhoneNumber = await userManager.GetPhoneNumberAsync(user);
+        if (hasPhoneNumber is not null)
+        {
+            input.PhoneToken = await userManager.GenerateChangePhoneNumberTokenAsync(user, input.PhoneNumber);
+            var updated = await userManager.ChangePhoneNumberAsync(user, input.PhoneNumber, input.PhoneToken);
+            if (updated.Succeeded)
+                logger.LogInformation("Phone number changed successfully!");
+            else
+                logger.LogInformation("Failed to change phone number...");
+            return updated;
+        }
+
+        var added = await userManager.SetPhoneNumberAsync(user, input.PhoneNumber);
+        if (added.Succeeded)
+            logger.LogInformation("Phone number added!");
+        else
+            logger.LogInformation("Failed to add phone number...");
+        return added;
+    }
+
+    public async Task<IdentityResult> ResetPasswordAsync(string id, UserPasswordDto input)
+    {
+        var user = await userManager.FindByIdAsync(id);
+
+        //Get from email or phone
+        input.PasswordToken = await userManager.GeneratePasswordResetTokenAsync(user);
+        var updated = await userManager.ResetPasswordAsync(user, input.PasswordToken, input.NewPassword);
+
+        return updated;
+    }
+
+    public async Task<IdentityResult> ChangePasswordAsync(string id, UserPasswordDto input)
+    {
+        var user = await userManager.FindByIdAsync(id);
+
+        var hasPassword = await userManager.HasPasswordAsync(user);
+        if (!hasPassword)
+        {
+            var added = await userManager.AddPasswordAsync(user, input.NewPassword);
+            if (added.Succeeded)
+                logger.LogInformation("Password added successfully!");
+            else
+                logger.LogInformation("Failed to add password...");
+            return added;
+        }
+
+        var updated = await userManager.ChangePasswordAsync(user, input.CurrentPassword, input.NewPassword);
+        if (updated.Succeeded)
+            logger.LogInformation("Password changed successfully!");
+        else
+            logger.LogInformation("Failed to change password...");
+        return updated;
     }
 
     public async Task<IdentityUser?> UpdateUserAsync(string id, EdidUserDto input)
