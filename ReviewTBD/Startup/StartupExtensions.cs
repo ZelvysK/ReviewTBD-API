@@ -9,5 +9,6 @@ public static class StartupExtensions
         builder.Services.AddScoped<IStudioService, StudioService>();
         builder.Services.AddScoped<IMediaService, MediaService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<JwtService>();
     }
 }

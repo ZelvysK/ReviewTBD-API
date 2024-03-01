@@ -66,7 +66,34 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
             return Ok(userByName);
         }
 
-        return BadRequest(result.ToString());
+        return BadRequest("Invalid username/email of password");
+    }
+    [HttpPost("LoginToken")]
+    public async Task<ActionResult<string>> LoginToken(LoginDto input)
+    {
+        var result = await userService.LoginUserAsync(input);
+
+        if (result.Succeeded)
+        {
+            IdentityUser user;
+            if (input.Username.Contains('@'))
+            {
+                user = await userService.GetUserByEmailAsync(input.Username);
+            }
+            else
+            {
+                user = await userService.GetUserByUsernameAsync(input.Username);
+            }
+
+            await signInManager.SignInAsync(user, false);
+
+            // Generate JWT token
+            var token = JwtService.GenerateJwtToken(user);
+
+            return Ok(token);
+        }
+
+        return BadRequest("Invalid username or password.");
     }
 
     [Authorize]
