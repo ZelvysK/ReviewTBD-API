@@ -19,7 +19,7 @@ public interface IUserService
     Task<IdentityResult> ChangePhoneNumberAsync(string id, UserPhoneDto input);
     Task<IdentityResult> ResetPasswordAsync(string id, UserPasswordDto input);
     Task<IdentityResult> ChangePasswordAsync(string id, UserPasswordDto input);
-    Task<IdentityUser?> UpdateUserAsync(string id, EdidUserDto input);
+    Task<IdentityUser?> UpdateUserAsync(string id, EditUserDto input);
 }
 
 public class UserService(
@@ -99,6 +99,7 @@ public class UserService(
         var entries = await query
             .Select(s => new UserDto
             {
+                Id = s.Id,
                 Username = s.UserName,
                 Email = s.Email
             })
@@ -189,7 +190,7 @@ public class UserService(
         return updated;
     }
 
-    public async Task<IdentityUser?> UpdateUserAsync(string id, EdidUserDto input)
+    public async Task<IdentityUser?> UpdateUserAsync(string id, EditUserDto input)
     {
         var user = await userManager.FindByIdAsync(id);
 

@@ -96,7 +96,7 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
         return BadRequest("Invalid username or password.");
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<IdentityUser>>> GetAllUsers([FromQuery] UserQuery filters)
     {
@@ -145,8 +145,8 @@ public class UserController(IUserService userService, SignInManager<IdentityUser
             : BadRequest(updated.Errors);
     }
 
-    [HttpPut]
-    public async Task<ActionResult<IdentityUser>> UpdateUser(string id, EdidUserDto input)
+    [HttpPost("{id:guid}")]
+    public async Task<ActionResult<IdentityUser>> UpdateUser(string id, EditUserDto input)
     {
         var updated = await userService.UpdateUserAsync(id, input);
 
