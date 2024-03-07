@@ -6,8 +6,7 @@ using ReviewTBDAPI;
 using SwaggerThemes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
-
+using ReviewTBDAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,24 +31,57 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+builder.Services
+    .AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<ReviewContext>();
+
+builder.Services.Configure<IdentityOptions>(options => { options.ClaimsIdentity.RoleClaimType = "Role"; });
 
 builder.Services
     .AddControllers()
     .AddJsonOptions(o => { o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+
+builder.Services.AddSwaggerGen(option =>
 {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Review TBD API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
     });
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        cors =>
+        {
+            cors.WithOrigins("http://localhost:5173") // Replace with your React app's URL
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
 
 var app = builder.Build();
 
@@ -60,13 +92,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(o => o
-    .WithOrigins(["http://localhost:5173"])
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials());
+app.UseCors("AllowReactApp");
 
-app.MapIdentityApi<IdentityUser>();
+app.MapIdentityApi<ApplicationUser>();
 
 app.UseHttpsRedirection();
 
