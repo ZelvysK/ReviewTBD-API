@@ -14,7 +14,6 @@ namespace ReviewTBDAPI.Controllers;
 [Route("[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {
-    [Admin]
     [HttpGet("me")]
     public async Task<ActionResult<MeDto>> GetUserInfo()
     {
@@ -30,6 +29,7 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(user);
     }
 
+    [Admin]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<IdentityUser>> GetUserById(Guid id)
     {
@@ -40,7 +40,7 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(entry);
     }
 
-
+    [Admin]
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<UserDto>>> GetAllUsers([FromQuery] UserQuery filters)
     {
@@ -49,53 +49,44 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(result);
     }
 
-    // [HttpPost("ChangeEmail")]
-    // public async Task<ActionResult> ChangeEmail(string id, UserEmailDto input)
-    // {
-    //     var updated = await userService.ChangeEmailAsync(id, input);
-    //
-    //     return updated.Succeeded
-    //         ? Ok(updated)
-    //         : BadRequest(updated.Errors);
-    // }
-    //
-    // [HttpPost("ChangePhoneNumber")]
-    // public async Task<ActionResult> ChangePhoneNumber(string id, UserPhoneDto input)
-    // {
-    //     var updated = await userService.ChangePhoneNumberAsync(id, input);
-    //
-    //     return updated.Succeeded
-    //         ? Ok(updated)
-    //         : BadRequest(updated.Errors);
-    // }
-    //
-    // [HttpPost("ChangePassword")]
-    // public async Task<ActionResult> ChangePassword(string id, UserPasswordDto input)
-    // {
-    //     var updated = await userService.ChangePasswordAsync(id, input);
-    //
-    //     return updated.Succeeded
-    //         ? Ok(updated)
-    //         : BadRequest(updated.Errors);
-    // }
-    //
-    // [HttpPost("ResetPassword")]
-    // public async Task<ActionResult> ResetPassword(string id, UserPasswordDto input)
-    // {
-    //     var updated = await userService.ResetPasswordAsync(id, input);
-    //
-    //     return updated.Succeeded
-    //         ? Ok(updated)
-    //         : BadRequest(updated.Errors);
-    // }
-    //
-    // [HttpPost("Update/{id:guid}")]
-    // public async Task<ActionResult<IdentityUser>> UpdateUser(string id, EditUserDto input)
-    // {
-    //     var updated = await userService.UpdateUserAsync(id, input);
-    //
-    //     return updated is not null
-    //         ? Ok(updated)
-    //         : NotFound();
-    // }
+    [HttpPost("Update/{id:guid}")]
+    public async Task<ActionResult<UserDto>> UpdateUser(Guid id, UserUpdateDto input)
+    {
+        var updated = await userService.UpdateUserAsync(id, input);
+    
+        return updated is not null
+            ? Ok(updated)
+            : NotFound();
+    }
+    
+    [Admin]
+    [HttpPost("AdminUpdate/{id:guid}")]
+    public async Task<ActionResult<UserDto>> AdminUpdateUser(Guid id, AdminUpdateDto input)
+    {
+        var updated = await userService.AdminUpdateUserAsync(id, input);
+    
+        return updated is not null
+            ? Ok(updated)
+            : NotFound();
+    }
+    
+    [HttpPost("ChangePassword")]
+    public async Task<ActionResult> ChangePassword(Guid id, UpdatePasswordDto input)
+    {
+        var updated = await userService.ChangePasswordAsync(id, input);
+    
+        return updated.Succeeded
+            ? Ok(updated)
+            : BadRequest(updated.Errors);
+    }
+    
+    [HttpPost("ResetPassword")]
+    public async Task<ActionResult> ResetPassword(Guid id, UpdatePasswordDto input)
+    {
+        var updated = await userService.ResetPasswordAsync(id, input);
+    
+        return updated.Succeeded
+            ? Ok(updated)
+            : BadRequest(updated.Errors);
+    }
 }
