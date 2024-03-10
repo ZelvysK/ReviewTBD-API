@@ -9,8 +9,7 @@ namespace ReviewTBDAPI.Services;
 
 public interface IUserService
 {
-    Task<MeDto?> GetUserByIdAsync(Guid id);
-
+    Task<UserDto?> GetUserByIdAsync(Guid id);
     Task<PaginatedResult<UserDto>> GetAllUsersAsync(UserQuery filters);
     Task<MeDto?> UpdateUserAsync(Guid id, UserUpdateDto dto);
     Task<MeDto?> AdminUpdateUserAsync(Guid id, AdminUpdateDto dto);
@@ -23,7 +22,7 @@ public class UserService(
     UserManager<ApplicationUser> userManager,
     ILogger<UserService> logger) : IUserService
 {
-    public async Task<MeDto?> GetUserByIdAsync(Guid id)
+    public async Task<UserDto?> GetUserByIdAsync(Guid id)
     {
         logger.LogInformation("Get user by id: {id}", id);
 
@@ -33,8 +32,9 @@ public class UserService(
 
         if (entry is null) return null;
 
-        return new MeDto
+        return new UserDto
         {
+            Id = entry.Id,
             UserName = entry.UserName!,
             PhoneNumber = entry.PhoneNumber!,
             Email = entry.Email!,
@@ -60,7 +60,8 @@ public class UserService(
                 Id = s.Id,
                 UserName = s.UserName!,
                 Email = s.Email!,
-                PhoneNumber = s.PhoneNumber!
+                PhoneNumber = s.PhoneNumber!,
+                Role = s.Role,
             })
             .ToArrayAsync();
 

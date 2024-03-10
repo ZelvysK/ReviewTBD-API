@@ -15,7 +15,7 @@ namespace ReviewTBDAPI.Controllers;
 public class UserController(IUserService userService) : ControllerBase
 {
     [HttpGet("me")]
-    public async Task<ActionResult<MeDto>> GetUserInfo()
+    public async Task<ActionResult<UserDto>> GetUserInfo()
     {
         var id = User.GetId();
 
@@ -40,7 +40,7 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(entry);
     }
 
-    [Admin]
+    // [Admin]
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<UserDto>>> GetAllUsers([FromQuery] UserQuery filters)
     {
