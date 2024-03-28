@@ -11,7 +11,7 @@ public interface IUserService
 {
     Task<UserDto?> GetUserByIdAsync(Guid id);
     Task<PaginatedResult<UserDto>> GetAllUsersAsync(UserQuery filters);
-    Task<MeDto?> UpdateUserAsync(Guid id, UserUpdateDto dto);
+    Task<MeDto?> UpdateUserAsync(Guid id, UserUpdateDto input);
     Task<MeDto?> AdminUpdateUserAsync(Guid id, AdminUpdateDto dto);
     Task<IdentityResult> ChangePasswordAsync(Guid id, UpdatePasswordDto dto);
     Task<IdentityResult> ResetPasswordAsync(Guid id, UpdatePasswordDto dto);
@@ -38,7 +38,8 @@ public class UserService(
             UserName = entry.UserName!,
             PhoneNumber = entry.PhoneNumber!,
             Email = entry.Email!,
-            Role = entry.Role
+            Role = entry.Role,
+            FirstTimeLogin = entry.FirstTimeLogin
         };
     }
 
@@ -76,62 +77,46 @@ public class UserService(
         };
     }
 
-    public async Task<MeDto?> UpdateUserAsync(Guid id, UserUpdateDto dto)
+    public async Task<MeDto?> UpdateUserAsync(Guid id, UserUpdateDto input)
     {
-        logger.LogInformation("Update user {id} to {dto}", id, dto);
+        logger.LogInformation("Update user {id} to {dto}", id, input);
 
-        var entry = await context.Users
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var user = await context.Users.FindAsync(id);
 
-        if (entry is not null)
+        if (user is null) return null;
+
+        user.Update(input);
+
+        await context.SaveChangesAsync();
+
+        return new MeDto
         {
-            entry.UserName = dto.Username;
-            entry.NormalizedUserName = dto.Username.ToUpper();
-            entry.Email = dto.Email;
-            entry.NormalizedEmail = dto.Email.ToUpper();
-            entry.PhoneNumber = dto.PhoneNumber;
-
-            await context.SaveChangesAsync();
-
-            var result = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-            return new MeDto
-            {
-                UserName = result.UserName!,
-                PhoneNumber = result.PhoneNumber!,
-                Email = result.Email!,
-                Role = result.Role
-            };
-        }
-
-        return null;
+            UserName = user.UserName!,
+            PhoneNumber = user.PhoneNumber!,
+            Email = user.Email!,
+            Role = user.Role
+        };
     }
 
     public async Task<MeDto?> AdminUpdateUserAsync(Guid id, AdminUpdateDto dto)
     {
         logger.LogInformation("Update user {id} as Admin, with {dto}", id, dto);
 
-        var entry = await context.Users
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var entry = await context.Users.FindAsync(id);
 
-        if (entry is not null)
+        if (entry is null) return null;
+
+        entry.Role = dto.Role;
+
+        await context.SaveChangesAsync();
+
+        return new MeDto
         {
-            entry.Role = dto.Role;
-
-            await context.SaveChangesAsync();
-
-            var result = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-            return new MeDto
-            {
-                UserName = result.UserName!,
-                PhoneNumber = result.PhoneNumber!,
-                Email = result.Email!,
-                Role = result.Role
-            };
-        }
-
-        return null;
+            UserName = entry.UserName!,
+            PhoneNumber = entry.PhoneNumber!,
+            Email = entry.Email!,
+            Role = entry.Role
+        };
     }
 
     public async Task<IdentityResult> ChangePasswordAsync(Guid id, UpdatePasswordDto dto)
@@ -152,7 +137,7 @@ public class UserService(
         logger.LogInformation("Reset password for user: {id}", id);
 
         var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
-        
+
         if (user is null) return null;
 
         dto.PasswordToken = await userManager.GeneratePasswordResetTokenAsync(user);

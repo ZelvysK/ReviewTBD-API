@@ -29,6 +29,8 @@ public class ReviewContext(DbContextOptions<ReviewContext> options)
             entity.Property(e => e.Role)
                 .HasDefaultValue(Role.User)
                 .HasConversion(new EnumToStringConverter<Role>());
+
+            entity.Property(e => e.FirstTimeLogin).HasDefaultValue(true);
         });
 
         base.OnModelCreating(modelBuilder);

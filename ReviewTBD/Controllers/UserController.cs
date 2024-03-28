@@ -29,7 +29,7 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(user);
     }
 
-    [Admin]
+    // [Admin]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<IdentityUser>> GetUserById(Guid id)
     {
