@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Filters;
+using ReviewTBDAPI.Models;
 using ReviewTBDAPI.Services;
 using ReviewTBDAPI.Utilities;
 
@@ -31,7 +31,7 @@ public class UserController(IUserService userService) : ControllerBase
 
     // [Admin]
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<IdentityUser>> GetUserById(Guid id)
+    public async Task<ActionResult<ApplicationUser>> GetUserById(Guid id)
     {
         var entry = await userService.GetUserByIdAsync(id);
 
