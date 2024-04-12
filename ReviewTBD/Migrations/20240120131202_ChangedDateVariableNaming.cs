@@ -13,22 +13,26 @@ namespace ReviewTBDAPI.Migrations
             migrationBuilder.RenameColumn(
                 name: "CreatedDate",
                 table: "Studios",
-                newName: "DateCreated");
+                newName: "DateCreated"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "CreatedDate",
                 table: "Movies",
-                newName: "DateCreated");
+                newName: "DateCreated"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "CreatedDate",
                 table: "Games",
-                newName: "DateCreated");
+                newName: "DateCreated"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "CreatedDate",
                 table: "Animes",
-                newName: "DateCreated");
+                newName: "DateCreated"
+            );
         }
 
         /// <inheritdoc />
@@ -37,22 +41,26 @@ namespace ReviewTBDAPI.Migrations
             migrationBuilder.RenameColumn(
                 name: "DateCreated",
                 table: "Studios",
-                newName: "CreatedDate");
+                newName: "CreatedDate"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "DateCreated",
                 table: "Movies",
-                newName: "CreatedDate");
+                newName: "CreatedDate"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "DateCreated",
                 table: "Games",
-                newName: "CreatedDate");
+                newName: "CreatedDate"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "DateCreated",
                 table: "Animes",
-                newName: "CreatedDate");
+                newName: "CreatedDate"
+            );
         }
     }
 }

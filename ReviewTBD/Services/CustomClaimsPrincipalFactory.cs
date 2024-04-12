@@ -10,7 +10,8 @@ public static class ClaimsExtensions
     public const string Role = "Role";
 }
 
-public class ExtendedClaimsTransformer(UserManager<ApplicationUser> userManager) : IClaimsTransformation
+public class ExtendedClaimsTransformer(UserManager<ApplicationUser> userManager)
+    : IClaimsTransformation
 {
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {

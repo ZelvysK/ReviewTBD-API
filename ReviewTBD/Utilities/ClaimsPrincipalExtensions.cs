@@ -8,8 +8,6 @@ public static class ClaimsPrincipalExtensions
     {
         var idClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        return idClaim is not null
-            ? new Guid(idClaim)
-            : null;
+        return idClaim is not null ? new Guid(idClaim) : null;
     }
 }

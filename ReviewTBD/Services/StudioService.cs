@@ -23,10 +23,13 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
 
         var query = context.Studios.AsNoTracking();
 
-        if (filters.StudioType is not null) query = query.Where(s => s.Type == filters.StudioType);
+        if (filters.StudioType is not null)
+            query = query.Where(s => s.Type == filters.StudioType);
 
         if (!string.IsNullOrWhiteSpace(filters.Term))
-            query = query.Where(s => s.Name.Contains(filters.Term) || s.Description.Contains(filters.Term));
+            query = query.Where(s =>
+                s.Name.Contains(filters.Term) || s.Description.Contains(filters.Term)
+            );
 
         var entries = await query
             .FilterByDateCreated(filters.From, filters.To)
@@ -50,9 +53,7 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
     {
         logger.LogInformation("Get studio by id: {id}", id);
 
-        var entry = await context.Studios
-            .AsNoTracking()
-            .FirstOrDefaultAsync(e => e.Id == id);
+        var entry = await context.Studios.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
 
         var result = entry?.ToDto();
 
@@ -74,7 +75,8 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
     {
         var studio = await context.Studios.FirstOrDefaultAsync(e => e.Id == id);
 
-        if (studio is null) return false;
+        if (studio is null)
+            return false;
 
         context.Studios.Remove(studio);
 
@@ -85,7 +87,8 @@ public class StudioService(ReviewContext context, ILogger<StudioService> logger)
     {
         var existingStudio = await context.Studios.FirstOrDefaultAsync(e => e.Id == id);
 
-        if (existingStudio is null) return null;
+        if (existingStudio is null)
+            return null;
 
         existingStudio.Update(input);
 

@@ -24,10 +24,13 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
 
         var query = context.Media.AsNoTracking();
 
-        if (filters.MediaType is not null) query = query.Where(t => t.MediaType == filters.MediaType);
+        if (filters.MediaType is not null)
+            query = query.Where(t => t.MediaType == filters.MediaType);
 
         if (!string.IsNullOrWhiteSpace(filters.Term))
-            query = query.Where(m => m.Name.Contains(filters.Term) || m.Description.Contains(filters.Term));
+            query = query.Where(m =>
+                m.Name.Contains(filters.Term) || m.Description.Contains(filters.Term)
+            );
 
         var entries = await query
             .FilterByDateCreated(filters.From, filters.To)
@@ -51,8 +54,8 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
     {
         logger.LogInformation("Get media by id: {id}", id);
 
-        var entry = await context.Media
-            .AsNoTracking()
+        var entry = await context
+            .Media.AsNoTracking()
             .Include(m => m.Studio)
             .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -61,9 +64,16 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         return result;
     }
 
-    public async Task<PaginatedResult<MediaDto>> GetMediaByStudioAsync(EntryQuery filters, Guid studioId)
+    public async Task<PaginatedResult<MediaDto>> GetMediaByStudioAsync(
+        EntryQuery filters,
+        Guid studioId
+    )
     {
-        logger.LogInformation("Get Media by studio: {animeStudioId}, with filters: {Filters}", studioId, filters);
+        logger.LogInformation(
+            "Get Media by studio: {animeStudioId}, with filters: {Filters}",
+            studioId,
+            filters
+        );
 
         var query = context.Media.AsNoTracking();
 
@@ -101,7 +111,8 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
     {
         var existingMedia = await context.Media.FirstOrDefaultAsync(e => e.Id == id);
 
-        if (existingMedia is null) return null;
+        if (existingMedia is null)
+            return null;
 
         existingMedia.Update(input);
 
@@ -116,7 +127,8 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
     {
         var media = await context.Media.FirstOrDefaultAsync(e => e.Id == id);
 
-        if (media is null) return false;
+        if (media is null)
+            return false;
 
         context.Media.Remove(media);
 

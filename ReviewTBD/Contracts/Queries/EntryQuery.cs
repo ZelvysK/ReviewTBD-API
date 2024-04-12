@@ -8,4 +8,5 @@ public record EntryQuery(
     DateOnly? To,
     string? Term,
     int Limit = 10,
-    int Offset = 0);
+    int Offset = 0
+);

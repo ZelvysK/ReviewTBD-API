@@ -11,14 +11,11 @@ namespace ReviewTBDAPI.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Animes");
+            migrationBuilder.DropTable(name: "Animes");
 
-            migrationBuilder.DropTable(
-                name: "Games");
+            migrationBuilder.DropTable(name: "Games");
 
-            migrationBuilder.DropTable(
-                name: "Movies");
+            migrationBuilder.DropTable(name: "Movies");
 
             migrationBuilder.CreateTable(
                 name: "Media",
@@ -42,20 +39,22 @@ namespace ReviewTBDAPI.Migrations
                         column: x => x.StudioId,
                         principalTable: "Studios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Media_StudioId",
                 table: "Media",
-                column: "StudioId");
+                column: "StudioId"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Media");
+            migrationBuilder.DropTable(name: "Media");
 
             migrationBuilder.CreateTable(
                 name: "Animes",
@@ -76,8 +75,10 @@ namespace ReviewTBDAPI.Migrations
                         column: x => x.AnimeStudioId,
                         principalTable: "Studios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Games",
@@ -98,8 +99,10 @@ namespace ReviewTBDAPI.Migrations
                         column: x => x.GameCreatorId,
                         principalTable: "Studios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Movies",
@@ -120,23 +123,28 @@ namespace ReviewTBDAPI.Migrations
                         column: x => x.MovieStudioId,
                         principalTable: "Studios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Animes_AnimeStudioId",
                 table: "Animes",
-                column: "AnimeStudioId");
+                column: "AnimeStudioId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Games_GameCreatorId",
                 table: "Games",
-                column: "GameCreatorId");
+                column: "GameCreatorId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Movies_MovieStudioId",
                 table: "Movies",
-                column: "MovieStudioId");
+                column: "MovieStudioId"
+            );
         }
     }
 }

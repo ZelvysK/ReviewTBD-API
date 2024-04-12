@@ -13,24 +13,24 @@ public interface IUserService
     Task<PaginatedResult<UserDto>> GetAllUsersAsync(UserQuery filters);
     Task<MeDto?> UpdateUserAsync(Guid id, UserUpdateDto input);
     Task<MeDto?> AdminUpdateUserAsync(Guid id, AdminUpdateDto dto);
-    Task<IdentityResult> ChangePasswordAsync(Guid id, UpdatePasswordDto dto);
-    Task<IdentityResult> ResetPasswordAsync(Guid id, UpdatePasswordDto dto);
+    Task<IdentityResult?> ChangePasswordAsync(Guid id, UpdatePasswordDto dto);
+    Task<IdentityResult?> ResetPasswordAsync(Guid id, UpdatePasswordDto dto);
 }
 
 public class UserService(
     ReviewContext context,
     UserManager<ApplicationUser> userManager,
-    ILogger<UserService> logger) : IUserService
+    ILogger<UserService> logger
+) : IUserService
 {
     public async Task<UserDto?> GetUserByIdAsync(Guid id)
     {
         logger.LogInformation("Get user by id: {id}", id);
 
-        var entry = await context.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var entry = await context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
-        if (entry is null) return null;
+        if (entry is null)
+            return null;
 
         return new UserDto
         {
@@ -51,8 +51,9 @@ public class UserService(
 
         if (!string.IsNullOrWhiteSpace(filters.Term))
             query = query.Where(u =>
-                (u.UserName != null && u.UserName.Contains(filters.Term)) ||
-                (u.Email != null && u.Email.Contains(filters.Term)));
+                (u.UserName != null && u.UserName.Contains(filters.Term))
+                || (u.Email != null && u.Email.Contains(filters.Term))
+            );
 
         var entries = await query
             .AddPagination(filters.Offset, filters.Limit)
@@ -83,7 +84,8 @@ public class UserService(
 
         var user = await context.Users.FindAsync(id);
 
-        if (user is null) return null;
+        if (user is null)
+            return null;
 
         user.Update(input);
 
@@ -104,7 +106,8 @@ public class UserService(
 
         var entry = await context.Users.FindAsync(id);
 
-        if (entry is null) return null;
+        if (entry is null)
+            return null;
 
         entry.Role = dto.Role;
 
@@ -119,26 +122,32 @@ public class UserService(
         };
     }
 
-    public async Task<IdentityResult> ChangePasswordAsync(Guid id, UpdatePasswordDto dto)
+    public async Task<IdentityResult?> ChangePasswordAsync(Guid id, UpdatePasswordDto dto)
     {
         logger.LogInformation("Change password for user: {id}", id);
 
         var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
-        if (user is null) return null;
+        if (user is null)
+            return null;
 
-        var result = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+        var result = await userManager.ChangePasswordAsync(
+            user,
+            dto.CurrentPassword,
+            dto.NewPassword
+        );
 
         return result;
     }
 
-    public async Task<IdentityResult> ResetPasswordAsync(Guid id, UpdatePasswordDto dto)
+    public async Task<IdentityResult?> ResetPasswordAsync(Guid id, UpdatePasswordDto dto)
     {
         logger.LogInformation("Reset password for user: {id}", id);
 
         var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
-        if (user is null) return null;
+        if (user is null)
+            return null;
 
         dto.PasswordToken = await userManager.GeneratePasswordResetTokenAsync(user);
         var result = await userManager.ResetPasswordAsync(user, dto.PasswordToken, dto.NewPassword);

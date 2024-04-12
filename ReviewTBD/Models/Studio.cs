@@ -13,26 +13,29 @@ public class Studio : IDated
     public DateOnly DateCreated { get; set; }
     public StudioType Type { get; set; }
 
-    public StudioDto ToDto() => new()
-    {
-        Id = Id,
-        Name = Name,
-        Description = Description,
-        ImageUrl = ImageUrl,
-        DateCreated = DateCreated,
-        Type = Type
-    };
+    public StudioDto ToDto() =>
+        new()
+        {
+            Id = Id,
+            Name = Name,
+            Description = Description,
+            ImageUrl = ImageUrl,
+            DateCreated = DateCreated,
+            Type = Type
+        };
 
-    public static Studio FromDto(StudioDto dto) => new()
-    {
-        Name = dto.Name,
-        Description = dto.Description,
-        ImageUrl = dto.ImageUrl,
-        DateCreated = dto.DateCreated,
-        Type = dto.Type
-    };
+    public static Studio FromDto(StudioDto dto) =>
+        new()
+        {
+            Name = dto.Name,
+            Description = dto.Description,
+            ImageUrl = dto.ImageUrl,
+            DateCreated = dto.DateCreated,
+            Type = dto.Type
+        };
 
-    public void Update(StudioDto update) {
+    public void Update(StudioDto update)
+    {
         Name = update.Name;
         Description = update.Description;
         ImageUrl = update.ImageUrl;

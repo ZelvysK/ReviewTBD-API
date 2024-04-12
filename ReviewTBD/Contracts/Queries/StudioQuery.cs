@@ -8,7 +8,8 @@ public record StudioQuery(
     DateOnly? To,
     string? Term,
     int Limit = 10,
-    int Offset = 0);
+    int Offset = 0
+);
 
 public class PaginatedResult<T>
 {

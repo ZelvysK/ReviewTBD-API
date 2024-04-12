@@ -26,7 +26,8 @@ public class ReviewContext(DbContextOptions<ReviewContext> options)
 
         modelBuilder.Entity<ApplicationUser>(entity =>
         {
-            entity.Property(e => e.Role)
+            entity
+                .Property(e => e.Role)
                 .HasDefaultValue(Role.User)
                 .HasConversion(new EnumToStringConverter<Role>());
 

@@ -13,12 +13,14 @@ namespace ReviewTBDAPI.Migrations
             migrationBuilder.RenameColumn(
                 name: "CoverUrl",
                 table: "Games",
-                newName: "CoverImageUrl");
+                newName: "CoverImageUrl"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "CoverUrl",
                 table: "Animes",
-                newName: "CoverImageUrl");
+                newName: "CoverImageUrl"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Type",
@@ -26,7 +28,8 @@ namespace ReviewTBDAPI.Migrations
                 type: "nvarchar(max)",
                 nullable: false,
                 oldClrType: typeof(int),
-                oldType: "int");
+                oldType: "int"
+            );
         }
 
         /// <inheritdoc />
@@ -35,12 +38,14 @@ namespace ReviewTBDAPI.Migrations
             migrationBuilder.RenameColumn(
                 name: "CoverImageUrl",
                 table: "Games",
-                newName: "CoverUrl");
+                newName: "CoverUrl"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "CoverImageUrl",
                 table: "Animes",
-                newName: "CoverUrl");
+                newName: "CoverUrl"
+            );
 
             migrationBuilder.AlterColumn<int>(
                 name: "Type",
@@ -48,7 +53,8 @@ namespace ReviewTBDAPI.Migrations
                 type: "int",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
+                oldType: "nvarchar(max)"
+            );
         }
     }
 }

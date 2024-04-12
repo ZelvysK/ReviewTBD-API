@@ -15,15 +15,14 @@ namespace ReviewTBDAPI.Migrations
                 table: "AspNetUsers",
                 type: "bit",
                 nullable: false,
-                defaultValue: true);
+                defaultValue: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "FirstTimeLogin",
-                table: "AspNetUsers");
+            migrationBuilder.DropColumn(name: "FirstTimeLogin", table: "AspNetUsers");
         }
     }
 }

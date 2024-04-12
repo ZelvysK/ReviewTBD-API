@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ReviewTBDAPI.Services;
+using ReviewTBDAPI.Utilities;
 
 namespace ReviewTBDAPI.Filters;
 
-public class AdminAttribute : Attribute, IAuthorizationFilter
+public class SelfOrAdminAttribute : Attribute, IAuthorizationFilter
 {
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -15,12 +16,25 @@ public class AdminAttribute : Attribute, IAuthorizationFilter
         }
 
         if (
-            !context.HttpContext.User.Claims.Any(c =>
+            context.HttpContext.User.Claims.Any(c =>
                 c is { Type: ClaimsExtensions.Role, Value: "Admin" }
             )
         )
         {
-            context.Result = new ForbidResult();
+            return;
         }
+
+        if (
+            context.HttpContext.Request.RouteValues.TryGetValue("id", out var idParameter)
+            && idParameter is string userId
+        )
+        {
+            if (context.HttpContext.User.GetId().ToString() == userId)
+            {
+                return;
+            }
+        }
+
+        context.Result = new ForbidResult();
     }
 }
