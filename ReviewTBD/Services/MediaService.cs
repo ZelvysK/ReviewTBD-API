@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ReviewTBDAPI.Contracts;
 using ReviewTBDAPI.Contracts.Queries;
 using ReviewTBDAPI.Models;
@@ -19,20 +18,19 @@ public interface IMediaService
 
 public class MediaService(ReviewContext context, ILogger<MediaService> logger) : IMediaService
 {
-    public async Task<PaginatedResult<MediaDto>> GetAllMediaAsync(EntryQuery filters) {
+    public async Task<PaginatedResult<MediaDto>> GetAllMediaAsync(EntryQuery filters)
+    {
         logger.LogInformation("Get all Media, filters: {Filters}", filters);
 
         var query = context.Media.AsNoTracking();
 
         if (filters.MediaType is not null)
-        {
             query = query.Where(t => t.MediaType == filters.MediaType);
-        }
 
         if (!string.IsNullOrWhiteSpace(filters.Term))
-        {
-            query = query.Where(m => m.Name.Contains(filters.Term) || m.Description.Contains(filters.Term));
-        }
+            query = query.Where(m =>
+                m.Name.Contains(filters.Term) || m.Description.Contains(filters.Term)
+            );
 
         var entries = await query
             .FilterByDateCreated(filters.From, filters.To)
@@ -52,11 +50,12 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         };
     }
 
-    public async Task<MediaDto?> GetMediaWithStudioByIdAsync(Guid id) {
+    public async Task<MediaDto?> GetMediaWithStudioByIdAsync(Guid id)
+    {
         logger.LogInformation("Get media by id: {id}", id);
 
-        var entry = await context.Media
-            .AsNoTracking()
+        var entry = await context
+            .Media.AsNoTracking()
             .Include(m => m.Studio)
             .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -65,8 +64,16 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         return result;
     }
 
-    public async Task<PaginatedResult<MediaDto>> GetMediaByStudioAsync(EntryQuery filters, Guid studioId) {
-        logger.LogInformation("Get Media by studio: {animeStudioId}, with filters: {Filters}", studioId, filters);
+    public async Task<PaginatedResult<MediaDto>> GetMediaByStudioAsync(
+        EntryQuery filters,
+        Guid studioId
+    )
+    {
+        logger.LogInformation(
+            "Get Media by studio: {animeStudioId}, with filters: {Filters}",
+            studioId,
+            filters
+        );
 
         var query = context.Media.AsNoTracking();
 
@@ -89,7 +96,8 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         };
     }
 
-    public async Task<Guid> CreateMediaAsync(MediaDto mediaDto) {
+    public async Task<Guid> CreateMediaAsync(MediaDto mediaDto)
+    {
         var media = Media.FromDto(mediaDto);
 
         context.Media.Add(media);
@@ -99,13 +107,12 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         return media.Id;
     }
 
-    public async Task<MediaDto?> UpdateMediaAsync(Guid id, MediaDto input) {
+    public async Task<MediaDto?> UpdateMediaAsync(Guid id, MediaDto input)
+    {
         var existingMedia = await context.Media.FirstOrDefaultAsync(e => e.Id == id);
 
         if (existingMedia is null)
-        {
             return null;
-        }
 
         existingMedia.Update(input);
 
@@ -116,17 +123,15 @@ public class MediaService(ReviewContext context, ILogger<MediaService> logger) :
         return result?.ToDto();
     }
 
-    public async Task<bool> DeleteMediaAsync(Guid id) {
+    public async Task<bool> DeleteMediaAsync(Guid id)
+    {
         var media = await context.Media.FirstOrDefaultAsync(e => e.Id == id);
 
         if (media is null)
-        {
             return false;
-        }
 
         context.Media.Remove(media);
 
         return await context.SaveChangesAsync() > 0;
     }
-
 }

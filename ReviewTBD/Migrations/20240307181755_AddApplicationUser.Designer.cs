@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReviewTBDAPI;
 
@@ -11,9 +12,11 @@ using ReviewTBDAPI;
 namespace ReviewTBDAPI.Migrations
 {
     [DbContext(typeof(ReviewContext))]
-    partial class ReviewContextModelSnapshot : ModelSnapshot
+    [Migration("20240307181755_AddApplicationUser")]
+    partial class AddApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,11 +176,6 @@ namespace ReviewTBDAPI.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("FirstTimeLogin")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -253,18 +251,11 @@ namespace ReviewTBDAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Genre")
-                        .HasColumnType("int");
-
                     b.Property<string>("MediaType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PublishedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -288,14 +279,6 @@ namespace ReviewTBDAPI.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Founder")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Headquarters")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

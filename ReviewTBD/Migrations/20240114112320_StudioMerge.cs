@@ -12,24 +12,24 @@ namespace ReviewTBDAPI.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Animes_AnimeStudios_AnimeStudioId",
-                table: "Animes");
+                table: "Animes"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Games_GameStudios_GameCreatorId",
-                table: "Games");
+                table: "Games"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Movies_MovieStudios_MovieStudioId",
-                table: "Movies");
+                table: "Movies"
+            );
 
-            migrationBuilder.DropTable(
-                name: "AnimeStudios");
+            migrationBuilder.DropTable(name: "AnimeStudios");
 
-            migrationBuilder.DropTable(
-                name: "GameStudios");
+            migrationBuilder.DropTable(name: "GameStudios");
 
-            migrationBuilder.DropTable(
-                name: "MovieStudios");
+            migrationBuilder.DropTable(name: "MovieStudios");
 
             migrationBuilder.CreateTable(
                 name: "Studios",
@@ -45,7 +45,8 @@ namespace ReviewTBDAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Studios", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Animes_Studios_AnimeStudioId",
@@ -53,7 +54,8 @@ namespace ReviewTBDAPI.Migrations
                 column: "AnimeStudioId",
                 principalTable: "Studios",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Games_Studios_GameCreatorId",
@@ -61,7 +63,8 @@ namespace ReviewTBDAPI.Migrations
                 column: "GameCreatorId",
                 principalTable: "Studios",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Movies_Studios_MovieStudioId",
@@ -69,7 +72,8 @@ namespace ReviewTBDAPI.Migrations
                 column: "MovieStudioId",
                 principalTable: "Studios",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
 
         /// <inheritdoc />
@@ -77,18 +81,17 @@ namespace ReviewTBDAPI.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Animes_Studios_AnimeStudioId",
-                table: "Animes");
+                table: "Animes"
+            );
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Games_Studios_GameCreatorId",
-                table: "Games");
+            migrationBuilder.DropForeignKey(name: "FK_Games_Studios_GameCreatorId", table: "Games");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Movies_Studios_MovieStudioId",
-                table: "Movies");
+                table: "Movies"
+            );
 
-            migrationBuilder.DropTable(
-                name: "Studios");
+            migrationBuilder.DropTable(name: "Studios");
 
             migrationBuilder.CreateTable(
                 name: "AnimeStudios",
@@ -103,7 +106,8 @@ namespace ReviewTBDAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AnimeStudios", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "GameStudios",
@@ -118,7 +122,8 @@ namespace ReviewTBDAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GameStudios", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "MovieStudios",
@@ -132,7 +137,8 @@ namespace ReviewTBDAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MovieStudios", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Animes_AnimeStudios_AnimeStudioId",
@@ -140,7 +146,8 @@ namespace ReviewTBDAPI.Migrations
                 column: "AnimeStudioId",
                 principalTable: "AnimeStudios",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Games_GameStudios_GameCreatorId",
@@ -148,7 +155,8 @@ namespace ReviewTBDAPI.Migrations
                 column: "GameCreatorId",
                 principalTable: "GameStudios",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Movies_MovieStudios_MovieStudioId",
@@ -156,7 +164,8 @@ namespace ReviewTBDAPI.Migrations
                 column: "MovieStudioId",
                 principalTable: "MovieStudios",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
     }
 }

@@ -23,7 +23,8 @@ namespace ReviewTBDAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AnimeStudios", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "GameStudios",
@@ -38,7 +39,8 @@ namespace ReviewTBDAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GameStudios", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "MovieStudios",
@@ -52,7 +54,8 @@ namespace ReviewTBDAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MovieStudios", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Animes",
@@ -73,8 +76,10 @@ namespace ReviewTBDAPI.Migrations
                         column: x => x.AnimeStudioId,
                         principalTable: "AnimeStudios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Games",
@@ -95,8 +100,10 @@ namespace ReviewTBDAPI.Migrations
                         column: x => x.GameCreatorId,
                         principalTable: "GameStudios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Movies",
@@ -117,45 +124,44 @@ namespace ReviewTBDAPI.Migrations
                         column: x => x.MovieStudioId,
                         principalTable: "MovieStudios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Animes_AnimeStudioId",
                 table: "Animes",
-                column: "AnimeStudioId");
+                column: "AnimeStudioId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Games_GameCreatorId",
                 table: "Games",
-                column: "GameCreatorId");
+                column: "GameCreatorId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Movies_MovieStudioId",
                 table: "Movies",
-                column: "MovieStudioId");
+                column: "MovieStudioId"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Animes");
+            migrationBuilder.DropTable(name: "Animes");
 
-            migrationBuilder.DropTable(
-                name: "Games");
+            migrationBuilder.DropTable(name: "Games");
 
-            migrationBuilder.DropTable(
-                name: "Movies");
+            migrationBuilder.DropTable(name: "Movies");
 
-            migrationBuilder.DropTable(
-                name: "AnimeStudios");
+            migrationBuilder.DropTable(name: "AnimeStudios");
 
-            migrationBuilder.DropTable(
-                name: "GameStudios");
+            migrationBuilder.DropTable(name: "GameStudios");
 
-            migrationBuilder.DropTable(
-                name: "MovieStudios");
+            migrationBuilder.DropTable(name: "MovieStudios");
         }
     }
 }
